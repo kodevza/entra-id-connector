@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.soft4pm.openicf</groupId>
+  <artifactId>entra-id-connector</artifactId>
+  <version>0.1.0</version>
+  <packaging>bundle</packaging>
+  <name>Microsoft Entra ID Governance Connector</name>
+  <description>OpenICF inventory connector for Microsoft Graph and Azure RBAC with service principal blocking.</description>
+  <licenses><license><name>Common Development and Distribution License 1.1</name><url>https://spdx.org/licenses/CDDL-1.1.html</url><distribution>repo</distribution></license></licenses>
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Match the Jackson API supplied by the supported OpenIDM host. -->
+    <jackson.version>2.18.6</jackson.version>
+  </properties>
+  <dependencies>
+    <dependency><groupId>org.openidentityplatform.openicf.framework</groupId><artifactId>connector-framework</artifactId><version>2.0.4</version><scope>provided</scope></dependency>
+    <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>${jackson.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>5.11.4</version><scope>test</scope></dependency>
+    <dependency><groupId>org.openidentityplatform.openicf.framework</groupId><artifactId>connector-framework-internal</artifactId><version>2.0.4</version><scope>test</scope></dependency>
+  </dependencies>
+  <build><plugins>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-clean-plugin</artifactId><version>3.4.1</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-install-plugin</artifactId><version>3.1.4</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-deploy-plugin</artifactId><version>3.1.4</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-resources-plugin</artifactId><version>3.3.1</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId><version>3.4.2</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.0</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.3</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId><version>3.5.3</version><executions><execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution></executions></plugin>
+    <plugin>
+      <groupId>org.apache.felix</groupId><artifactId>maven-bundle-plugin</artifactId><version>5.1.9</version><extensions>true</extensions>
+      <configuration><instructions>
+        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+        <ConnectorBundle-FrameworkVersion>1.5</ConnectorBundle-FrameworkVersion>
+        <ConnectorBundle-Name>${project.groupId}.${project.artifactId}</ConnectorBundle-Name>
+        <ConnectorBundle-Version>${project.version}</ConnectorBundle-Version>
+        <Export-Package>eu.soft4pm.openicf.entra</Export-Package>
+        <!-- OSGi resolves Jackson from OpenIDM. Missing/incompatible packages must fail resolution. -->
+        <Import-Package>!java.*,com.fasterxml.jackson.*;version="[2.18,3)",org.identityconnectors.*,*</Import-Package>
+      </instructions></configuration>
+    </plugin>
+  </plugins></build>
+</project>

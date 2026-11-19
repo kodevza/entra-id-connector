@@ -1,0 +1,1490 @@
+{
+  "mappings": [
+    {
+      "name": "systemEntraGroup_managedEntraGroup",
+      "source": "system/entra/__GROUP__",
+      "target": "managed/entraGroup",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraGroup_managedEntraGroup\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraGroup_managedEntraGroup timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "displayName",
+          "target": "displayName"
+        },
+        {
+          "source": "mail",
+          "target": "mail"
+        },
+        {
+          "source": "description",
+          "target": "description"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "mailNickname",
+          "target": "mailNickname"
+        },
+        {
+          "source": "mailEnabled",
+          "target": "mailEnabled"
+        },
+        {
+          "source": "securityEnabled",
+          "target": "securityEnabled"
+        },
+        {
+          "source": "isAssignableToRole",
+          "target": "isAssignableToRole"
+        },
+        {
+          "source": "groupTypes",
+          "target": "groupTypes"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraAzureRoleDefinition_managedEntraAzureRoleDefinition",
+      "source": "system/entra/azureRoleDefinition",
+      "target": "managed/entraAzureRoleDefinition",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraAzureRoleDefinition_managedEntraAzureRoleDefinition\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraAzureRoleDefinition_managedEntraAzureRoleDefinition timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "subscriptionId",
+          "target": "subscriptionId"
+        },
+        {
+          "source": "description",
+          "target": "description"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "assignableScopes",
+          "target": "assignableScopes"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "permissionsJson",
+          "target": "permissionsJson"
+        },
+        {
+          "source": "roleName",
+          "target": "roleName"
+        },
+        {
+          "source": "type",
+          "target": "type"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraApplication_managedEntraApplication",
+      "source": "system/entra/application",
+      "target": "managed/entraApplication",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraApplication_managedEntraApplication\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraApplication_managedEntraApplication timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "displayName",
+          "target": "displayName"
+        },
+        {
+          "source": "apiJson",
+          "target": "apiJson"
+        },
+        {
+          "source": "requiredResourceAccessJson",
+          "target": "requiredResourceAccessJson"
+        },
+        {
+          "source": "appId",
+          "target": "appId"
+        },
+        {
+          "source": "signInAudience",
+          "target": "signInAudience"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "identifierUris",
+          "target": "identifierUris"
+        },
+        {
+          "source": "appRolesJson",
+          "target": "appRolesJson"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraApplicationOwner_managedEntraApplicationOwner",
+      "source": "system/entra/applicationOwner",
+      "target": "managed/entraApplicationOwner",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraApplicationOwner_managedEntraApplicationOwner\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraApplicationOwner_managedEntraApplicationOwner timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "targetId",
+          "target": "targetId"
+        },
+        {
+          "source": "targetType",
+          "target": "targetType"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "sourceId",
+          "target": "parentId"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraDirectoryRoleDefinition_managedEntraDirectoryRoleDefinition",
+      "source": "system/entra/directoryRoleDefinition",
+      "target": "managed/entraDirectoryRoleDefinition",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraDirectoryRoleDefinition_managedEntraDirectoryRoleDefinition\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraDirectoryRoleDefinition_managedEntraDirectoryRoleDefinition timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "displayName",
+          "target": "displayName"
+        },
+        {
+          "source": "inheritsPermissionsFromJson",
+          "target": "inheritsPermissionsFromJson"
+        },
+        {
+          "source": "description",
+          "target": "description"
+        },
+        {
+          "source": "templateId",
+          "target": "templateId"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "isEnabled",
+          "target": "isEnabled"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "rolePermissionsJson",
+          "target": "rolePermissionsJson"
+        },
+        {
+          "source": "isBuiltIn",
+          "target": "isBuiltIn"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraDirectoryRoleAssignment_managedEntraDirectoryRoleAssignment",
+      "source": "system/entra/directoryRoleAssignment",
+      "target": "managed/entraDirectoryRoleAssignment",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraDirectoryRoleAssignment_managedEntraDirectoryRoleAssignment\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraDirectoryRoleAssignment_managedEntraDirectoryRoleAssignment timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "appScopeId",
+          "target": "appScopeId"
+        },
+        {
+          "source": "roleDefinitionId",
+          "target": "roleDefinitionId"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "directoryScopeId",
+          "target": "directoryScopeId"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "principalId",
+          "target": "principalId"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraServicePrincipalOwner_managedEntraServicePrincipalOwner",
+      "source": "system/entra/servicePrincipalOwner",
+      "target": "managed/entraServicePrincipalOwner",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraServicePrincipalOwner_managedEntraServicePrincipalOwner\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraServicePrincipalOwner_managedEntraServicePrincipalOwner timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "targetId",
+          "target": "targetId"
+        },
+        {
+          "source": "targetType",
+          "target": "targetType"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "sourceId",
+          "target": "parentId"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraOauth2PermissionGrant_managedEntraOauth2PermissionGrant",
+      "source": "system/entra/oauth2PermissionGrant",
+      "target": "managed/entraOauth2PermissionGrant",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraOauth2PermissionGrant_managedEntraOauth2PermissionGrant\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraOauth2PermissionGrant_managedEntraOauth2PermissionGrant timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "scope",
+          "target": "scope"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "consentType",
+          "target": "consentType"
+        },
+        {
+          "source": "resourceId",
+          "target": "resourceId"
+        },
+        {
+          "source": "clientId",
+          "target": "clientId"
+        },
+        {
+          "source": "principalId",
+          "target": "principalId"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraAzureRoleAssignment_managedEntraAzureRoleAssignment",
+      "source": "system/entra/azureRoleAssignment",
+      "target": "managed/entraAzureRoleAssignment",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraAzureRoleAssignment_managedEntraAzureRoleAssignment\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraAzureRoleAssignment_managedEntraAzureRoleAssignment timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "subscriptionId",
+          "target": "subscriptionId"
+        },
+        {
+          "source": "roleDefinitionId",
+          "target": "roleDefinitionId"
+        },
+        {
+          "source": "scope",
+          "target": "scope"
+        },
+        {
+          "source": "description",
+          "target": "description"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "delegatedManagedIdentityResourceId",
+          "target": "delegatedManagedIdentityResourceId"
+        },
+        {
+          "source": "condition",
+          "target": "condition"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "principalType",
+          "target": "principalType"
+        },
+        {
+          "source": "conditionVersion",
+          "target": "conditionVersion"
+        },
+        {
+          "source": "principalId",
+          "target": "principalId"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraGroupMembership_managedEntraGroupMembership",
+      "source": "system/entra/groupMembership",
+      "target": "managed/entraGroupMembership",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraGroupMembership_managedEntraGroupMembership\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraGroupMembership_managedEntraGroupMembership timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "targetId",
+          "target": "targetId"
+        },
+        {
+          "source": "targetType",
+          "target": "targetType"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "sourceId",
+          "target": "parentId"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraServicePrincipal_managedEntraServicePrincipal",
+      "source": "system/entra/servicePrincipal",
+      "target": "managed/entraServicePrincipal",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraServicePrincipal_managedEntraServicePrincipal\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraServicePrincipal_managedEntraServicePrincipal timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "displayName",
+          "target": "displayName"
+        },
+        {
+          "source": "accountEnabled",
+          "target": "accountEnabled"
+        },
+        {
+          "source": "appId",
+          "target": "appId"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "oauth2PermissionScopesJson",
+          "target": "oauth2PermissionScopesJson"
+        },
+        {
+          "source": "appOwnerOrganizationId",
+          "target": "appOwnerOrganizationId"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "servicePrincipalType",
+          "target": "servicePrincipalType"
+        },
+        {
+          "source": "servicePrincipalNames",
+          "target": "servicePrincipalNames"
+        },
+        {
+          "source": "tags",
+          "target": "tags"
+        },
+        {
+          "source": "appRolesJson",
+          "target": "appRolesJson"
+        },
+        {
+          "source": "grantedAccessJson",
+          "target": "grantedAccessJson"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraUser_managedEntraUser",
+      "source": "system/entra/__ACCOUNT__",
+      "target": "managed/entraUser",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraUser_managedEntraUser\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraUser_managedEntraUser timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "displayName",
+          "target": "displayName"
+        },
+        {
+          "source": "accountEnabled",
+          "target": "accountEnabled"
+        },
+        {
+          "source": "mail",
+          "target": "mail"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "userType",
+          "target": "userType"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "userPrincipalName",
+          "target": "userPrincipalName"
+        },
+        {
+          "source": "givenName",
+          "target": "givenName"
+        },
+        {
+          "source": "surname",
+          "target": "surname"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    },
+    {
+      "name": "systemEntraAppRoleAssignment_managedEntraAppRoleAssignment",
+      "source": "system/entra/appRoleAssignment",
+      "target": "managed/entraAppRoleAssignment",
+      "sourceQuery": {
+        "_queryFilter": "true"
+      },
+      "sourceQueryFullEntry": true,
+      "taskThreads": 1,
+      "runTargetPhase": false,
+      "correlationQuery": {
+        "type": "groovy",
+        "source": "// systemEntraAppRoleAssignment_managedEntraAppRoleAssignment\nreturn [_queryFilter: \"sourceId eq \" + groovy.json.JsonOutput.toJson(source._id) + \" and tenantId eq \" + groovy.json.JsonOutput.toJson(\"REPLACE_WITH_TENANT_UUID\")]"
+      },
+      "properties": [
+        {
+          "source": "_id",
+          "target": "sourceId"
+        },
+        {
+          "target": "tenantId",
+          "default": "REPLACE_WITH_TENANT_UUID"
+        },
+        {
+          "target": "collectedAt",
+          "transform": {
+            "type": "groovy",
+            "source": "// systemEntraAppRoleAssignment_managedEntraAppRoleAssignment timestamp\nreturn java.time.Instant.now().toString()"
+          }
+        },
+        {
+          "source": "principalDisplayName",
+          "target": "principalDisplayName"
+        },
+        {
+          "source": "resourceDisplayName",
+          "target": "resourceDisplayName"
+        },
+        {
+          "source": "createdDateTime",
+          "target": "createdDateTime"
+        },
+        {
+          "source": "objectType",
+          "target": "objectType"
+        },
+        {
+          "source": "appRoleId",
+          "target": "appRoleId"
+        },
+        {
+          "source": "__NAME__",
+          "target": "sourceName"
+        },
+        {
+          "source": "principalType",
+          "target": "principalType"
+        },
+        {
+          "source": "resourceId",
+          "target": "resourceId"
+        },
+        {
+          "source": "principalId",
+          "target": "principalId"
+        }
+      ],
+      "policies": [
+        {
+          "situation": "CONFIRMED",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "FOUND",
+          "action": "UPDATE"
+        },
+        {
+          "situation": "ABSENT",
+          "action": "CREATE"
+        },
+        {
+          "situation": "MISSING",
+          "action": "CREATE"
+        },
+        {
+          "situation": "AMBIGUOUS",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "FOUND_ALREADY_LINKED",
+          "action": "EXCEPTION"
+        },
+        {
+          "situation": "SOURCE_MISSING",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNQUALIFIED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "UNASSIGNED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "SOURCE_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "TARGET_IGNORED",
+          "action": "IGNORE"
+        },
+        {
+          "situation": "LINK_ONLY",
+          "action": "IGNORE"
+        }
+      ]
+    }
+  ]
+}

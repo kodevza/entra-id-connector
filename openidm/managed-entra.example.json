@@ -1,0 +1,1776 @@
+{
+  "objects": [
+    {
+      "name": "entraGroup",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraGroup",
+        "title": "Entra Groups",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "displayName",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "mail",
+          "description",
+          "objectType",
+          "mailNickname",
+          "mailEnabled",
+          "securityEnabled",
+          "isAssignableToRole",
+          "groupTypes"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "displayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "mail": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "mail",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "description",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "mailNickname": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "mailNickname",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "mailEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "mailEnabled",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "securityEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "securityEnabled",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "isAssignableToRole": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "isAssignableToRole",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "groupTypes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "groupTypes",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraAzureRoleDefinition",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraAzureRoleDefinition",
+        "title": "Entra AzureRoleDefinition",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "subscriptionId",
+          "description",
+          "objectType",
+          "assignableScopes",
+          "permissionsJson",
+          "roleName",
+          "type"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "subscriptionId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "subscriptionId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "description",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "assignableScopes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "assignableScopes",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "permissionsJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "permissionsJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "roleName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "roleName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "type",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraApplication",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraApplication",
+        "title": "Entra Application",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "displayName",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "apiJson",
+          "requiredResourceAccessJson",
+          "appId",
+          "signInAudience",
+          "objectType",
+          "identifierUris",
+          "appRolesJson"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "displayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "apiJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "apiJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "requiredResourceAccessJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "requiredResourceAccessJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "appId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "signInAudience": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "signInAudience",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "identifierUris": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "identifierUris",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "appRolesJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appRolesJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraApplicationOwner",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraApplicationOwner",
+        "title": "Entra ApplicationOwner",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "parentId",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "targetId",
+          "targetType",
+          "objectType"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source relationship ID",
+            "required": true,
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "targetId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "targetId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "targetType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "targetType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "parentId": {
+            "type": "string",
+            "title": "Parent source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraDirectoryRoleDefinition",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraDirectoryRoleDefinition",
+        "title": "Entra DirectoryRoleDefinition",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "displayName",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "inheritsPermissionsFromJson",
+          "description",
+          "templateId",
+          "objectType",
+          "isEnabled",
+          "rolePermissionsJson",
+          "isBuiltIn"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "displayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "inheritsPermissionsFromJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "inheritsPermissionsFromJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "description",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "templateId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "templateId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "isEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "isEnabled",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "rolePermissionsJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "rolePermissionsJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "isBuiltIn": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "isBuiltIn",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraDirectoryRoleAssignment",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraDirectoryRoleAssignment",
+        "title": "Entra DirectoryRoleAssignment",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "appScopeId",
+          "roleDefinitionId",
+          "objectType",
+          "directoryScopeId",
+          "principalId"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "appScopeId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appScopeId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "roleDefinitionId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "roleDefinitionId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "directoryScopeId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "directoryScopeId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "principalId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraServicePrincipalOwner",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraServicePrincipalOwner",
+        "title": "Entra ServicePrincipalOwner",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "parentId",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "targetId",
+          "targetType",
+          "objectType"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source relationship ID",
+            "required": true,
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "targetId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "targetId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "targetType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "targetType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "parentId": {
+            "type": "string",
+            "title": "Parent source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraOauth2PermissionGrant",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraOauth2PermissionGrant",
+        "title": "Entra Oauth2PermissionGrant",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "scope",
+          "objectType",
+          "consentType",
+          "resourceId",
+          "clientId",
+          "principalId"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "scope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "scope",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "consentType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "consentType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "resourceId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "clientId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "clientId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "principalId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraAzureRoleAssignment",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraAzureRoleAssignment",
+        "title": "Entra AzureRoleAssignment",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "subscriptionId",
+          "roleDefinitionId",
+          "scope",
+          "description",
+          "objectType",
+          "delegatedManagedIdentityResourceId",
+          "condition",
+          "principalType",
+          "conditionVersion",
+          "principalId"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "subscriptionId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "subscriptionId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "roleDefinitionId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "roleDefinitionId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "scope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "scope",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "description",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "delegatedManagedIdentityResourceId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "condition": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "condition",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "principalType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "conditionVersion": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "conditionVersion",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "principalId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraGroupMembership",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraGroupMembership",
+        "title": "Entra GroupMembership",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "parentId",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "targetId",
+          "targetType",
+          "objectType"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source relationship ID",
+            "required": true,
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "targetId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "targetId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "targetType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "targetType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "parentId": {
+            "type": "string",
+            "title": "Parent source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraServicePrincipal",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraServicePrincipal",
+        "title": "Entra ServicePrincipal",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "displayName",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "accountEnabled",
+          "appId",
+          "objectType",
+          "oauth2PermissionScopesJson",
+          "appOwnerOrganizationId",
+          "servicePrincipalType",
+          "servicePrincipalNames",
+          "tags",
+          "appRolesJson",
+          "grantedAccessJson"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "displayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "accountEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "accountEnabled",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "appId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "oauth2PermissionScopesJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "oauth2PermissionScopesJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "appOwnerOrganizationId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appOwnerOrganizationId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "servicePrincipalType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "servicePrincipalType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "servicePrincipalNames": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "servicePrincipalNames",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "tags",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "appRolesJson": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appRolesJson",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "grantedAccessJson": {
+            "type": "string",
+            "title": "Granted permissions snapshot",
+            "viewable": true,
+            "userEditable": false,
+            "isProtected": true
+          }
+        }
+      }
+    },
+    {
+      "name": "entraUser",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraUser",
+        "title": "Entra Users",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "displayName",
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "accountEnabled",
+          "mail",
+          "objectType",
+          "userType",
+          "userPrincipalName",
+          "givenName",
+          "surname"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "displayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "accountEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "title": "accountEnabled",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "mail": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "mail",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "userType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "userType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "userPrincipalName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "userPrincipalName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "givenName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "givenName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "surname": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "surname",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "entraAppRoleAssignment",
+      "schema": {
+        "id": "urn:soft4pm:openidm:entraAppRoleAssignment",
+        "title": "Entra AppRoleAssignment",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "type": "object",
+        "viewable": true,
+        "order": [
+          "sourceName",
+          "sourceId",
+          "tenantId",
+          "collectedAt",
+          "_id",
+          "principalDisplayName",
+          "resourceDisplayName",
+          "createdDateTime",
+          "objectType",
+          "appRoleId",
+          "principalType",
+          "resourceId",
+          "principalId"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "OpenIDM ID",
+            "viewable": false,
+            "userEditable": false
+          },
+          "sourceId": {
+            "type": "string",
+            "title": "Source object ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "tenantId": {
+            "type": "string",
+            "title": "Entra tenant ID",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false,
+            "required": true
+          },
+          "collectedAt": {
+            "type": "string",
+            "title": "Collected at (UTC)",
+            "viewable": true,
+            "searchable": false,
+            "userEditable": false
+          },
+          "principalDisplayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalDisplayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "resourceDisplayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "resourceDisplayName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "createdDateTime": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "createdDateTime",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "objectType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "objectType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "appRoleId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "appRoleId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "sourceName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "sourceName",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "principalType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalType",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "resourceId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          },
+          "principalId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "principalId",
+            "viewable": true,
+            "searchable": true,
+            "userEditable": false
+          }
+        }
+      }
+    }
+  ]
+}

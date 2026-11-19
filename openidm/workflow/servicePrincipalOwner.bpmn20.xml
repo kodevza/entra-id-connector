@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+    targetNamespace="urn:soft4pm:openidm:governance">
+  <process id="servicePrincipalOwner" name="Service principal — assign governance owner" isExecutable="true">
+    <startEvent id="start" activiti:formKey="forms/servicePrincipalOwnerStart.html" activiti:initiator="startUserId">
+      <extensionElements>
+        <activiti:formProperty id="servicePrincipalId" name="Service principal Entra Object ID" type="string" required="true"/>
+        <activiti:formProperty id="newOwnerId" name="New owner Entra Object ID (manual nomination)" type="string"/>
+        <activiti:formProperty id="ownerEvidenceJson" name="OwnerLens evidence JSON" type="string"/>
+        <activiti:formProperty id="reason" name="Reason" type="string" required="true"/>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="toPrepare" sourceRef="start" targetRef="prepare"/>
+    <scriptTask id="prepare" name="Validate and record request" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script><![CDATA[
+        // Mark user-facing validation text so the UI can extract it from script
+        // exception wrappers without changing the OpenIDM workflow resource.
+        def validationFailure = { String message ->
+            throw new IllegalArgumentException('[workflow-message]' + message + '[/workflow-message]')
+        }
+        def guid = /(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+        def evidenceInput = execution.getVariable('ownerEvidenceJson')
+        if (evidenceInput != null && !(evidenceInput instanceof String)) {
+            validationFailure('OwnerLens evidence must be a JSON string.')
+        }
+        evidenceInput = evidenceInput?.trim()
+        def manualOwner = execution.getVariable('newOwnerId')
+        if (!(servicePrincipalId ==~ guid) || (!evidenceInput && !(manualOwner ==~ guid)) || !reason?.trim()) {
+            validationFailure('Valid Entra Object IDs for the service principal and owner, and a non-empty reason are required. Copy Object IDs from Entra Enterprise applications and Users.')
+        }
+        // Resolve external object IDs; never interpret form values as local record IDs.
+        def principalMatches = openidm.query('managed/entraServicePrincipal',
+            [_queryFilter:'sourceId eq ' + groovy.json.JsonOutput.toJson(servicePrincipalId.toLowerCase())]).result
+        if (principalMatches.size() != 1) {
+            validationFailure('Service principal Entra Object ID must match exactly one synchronized service principal. Use the Object ID from Entra Enterprise applications, not the Application/client ID or OpenIDM record ID. Check synchronization; if this persists, ask an administrator to check for duplicates.')
+        }
+        def principal = openidm.read('managed/entraServicePrincipal/' + principalMatches[0]._id, null, ['*','governanceOwner'])
+        def json = groovy.json.JsonOutput
+        def parser = new groovy.json.JsonSlurper()
+        def resolveOwner = { field, value ->
+            def matches = openidm.query('managed/user', [
+                _queryFilter:field + ' eq ' + json.toJson(value) +
+                    ' and entraTenantId eq ' + json.toJson(principal.tenantId)]).result
+            if (matches.size() != 1) return null
+            def user = openidm.read('managed/user/' + matches[0]._id)
+            user.accountStatus == 'active' && user.entraObjectId ==~ guid &&
+                user.entraTenantId == principal.tenantId && user.userName ? user : null
+        }
+        def evidence = []
+        def candidates = []
+        def owner
+        if (evidenceInput) {
+            def report
+            try {
+                if (evidenceInput.length() > 250000) throw new IllegalArgumentException()
+                report = parser.parseText(evidenceInput)
+                if (!(report instanceof Map) || !(report.servicePrincipalId instanceof String) ||
+                    !report.servicePrincipalId.equalsIgnoreCase(principal.sourceId) ||
+                    !(report.ownerCandidates instanceof List) || report.ownerCandidates.size() > 500 ||
+                    report.ownerCandidates.any { !(it instanceof Map) }) throw new IllegalArgumentException()
+            } catch (IllegalArgumentException | groovy.json.JsonException ignored) {
+                validationFailure('Supply valid OwnerLens evidence for this service principal, with at most 500 evidence rows.')
+            }
+            def fields = ['candidate','candidateType','confidence','relationship','signal',
+                'evidenceType','evidenceId','evidenceSource','evidenceValue','reason','candidateObjectId']
+            evidence = report.ownerCandidates.collect { row ->
+                fields.collectEntries { field -> [(field): row[field] instanceof String ? row[field] : ''] }
+            }
+            def confidence = [HIGH:3, MED:2, LOW:1]
+            def resolved = [:]
+            evidence.sort(false) { a, b -> (confidence[b.confidence] ?: 0) <=> (confidence[a.confidence] ?: 0) }.each { row ->
+                if (!(row.candidateType in ['User','ActivityCaller'])) return
+                def objectId = row.candidateObjectId
+                if (!objectId && row.evidenceType == 'Ownership Metadata' && row.evidenceValue ==~ guid) {
+                    objectId = row.evidenceValue
+                }
+                if (objectId && !(objectId ==~ guid)) return
+                def identity = objectId ?: row.candidate.trim()
+                def field = identity ==~ guid ? 'entraObjectId' : 'entraUserPrincipalName'
+                if (field == 'entraUserPrincipalName' && !(identity ==~ /[^\s@]+@[^\s@]+/)) return
+                if (field == 'entraObjectId') identity = identity.toLowerCase(java.util.Locale.ROOT)
+                if (!resolved.containsKey(identity)) resolved[identity] = resolveOwner(field, identity)
+                def user = resolved[identity]
+                if (!user || candidates.any { it.id == user._id }) return
+                if (!owner) owner = user
+                candidates << [id:user._id, objectId:user.entraObjectId,
+                    label:user.displayName ?: user.userName, confidence:row.confidence]
+            }
+            if (!candidates) validationFailure('OwnerLens evidence yielded no active synchronized users in the service principal tenant.')
+        } else {
+            owner = resolveOwner('entraObjectId', manualOwner.toLowerCase(java.util.Locale.ROOT))
+            if (!owner) validationFailure('Owner Entra Object ID must match exactly one active synchronized user in the service principal tenant.')
+        }
+        def access = principal.grantedAccessJson ? new groovy.json.JsonSlurper().parseText(principal.grantedAccessJson) : null
+        def accessLines = access ? ['Collected: ' + access.collectedAt, access.coverage] :
+            ['Permissions have not been collected. Ask an administrator to reconcile this service principal before reviewing access.']
+        access?.permissions?.each { permission ->
+            def details = permission.kind == 'delegated' ?
+                'Consent: ' + permission.consentType + (permission.principalId ? '; user: ' + permission.principalId : '') :
+                permission.kind == 'directoryRole' ? 'Scope: ' + (permission.directoryScopeId ?: permission.appScopeId ?: 'unspecified') : ''
+            accessLines << ([permission.kind, permission.resourceName, permission.permission, details, permission.description].findAll { it }.join(' | '))
+        }
+        if (access && !access.permissions) accessLines << 'No direct Entra grants found in the collected scope.'
+        def accessSummary = accessLines.join('\n\n')
+        def request = [subject:principal.sourceId, subjectName:principal.displayName ?: principal.sourceId,
+            subjectType:'servicePrincipal', source:'entra', tenantId:principal.tenantId,
+            processId:execution.getProcessInstanceId(), processType:'servicePrincipalOwner',
+            recordType:'ownership_assignment', reviewer:owner.userName,
+            grantedAccessJson:principal.grantedAccessJson ?: '', accessSummary:accessSummary,
+            servicePrincipalId:principal._id, servicePrincipalName:principal.displayName,
+            newOwnerId:owner._id, newOwnerUserName:owner.userName,
+            previousOwnerRef:principal.governanceOwner?._ref ?: '', reason:reason,
+            requester:org.activiti.engine.impl.identity.Authentication.getAuthenticatedUserId(),
+            status:'pending', createdAt:java.time.Instant.now().toString()]
+        if (candidates) {
+            request.ownerEvidenceJson = json.toJson(evidence)
+            request.ownerCandidatesJson = json.toJson(candidates)
+            request.ownerReviewHistoryJson = '[]'
+            execution.setVariable('ownerEvidenceJson', request.ownerEvidenceJson)
+            execution.setVariable('ownerCandidatesJson', json.toJson(candidates.collect { candidate ->
+                [objectId:candidate.objectId, label:candidate.label, confidence:candidate.confidence,
+                    state:candidate.id == owner._id ? 'current' : 'available']
+            }))
+        }
+        // Process variables are client-writable on task completion. The authoritative
+        // request is stored under the engine's process ID in an admin-only collection.
+        openidm.create('managed/entraOwnerRequest', execution.getProcessInstanceId(), request)
+        execution.setVariable('accessSummary', request.accessSummary)
+        execution.setVariable('grantedAccessJson', request.grantedAccessJson)
+        execution.setVariable('subject', request.subject)
+        execution.setVariable('source', request.source)
+        execution.setVariable('ownerAssignee', owner.userName)
+        execution.setVariable('principalLabel', principal.displayName ?: principal._id)
+        execution.setVariable('ownerLabel', owner.displayName ?: owner.userName)
+      ]]></script>
+    </scriptTask>
+    <sequenceFlow id="toApproval" sourceRef="prepare" targetRef="acceptOwnership"/>
+    <userTask id="acceptOwnership" name="Accept ownership: ${principalLabel}" activiti:assignee="${ownerAssignee}" activiti:formKey="forms/servicePrincipalOwner.html">
+      <extensionElements>
+        <activiti:formProperty id="subject" name="Subject" type="string" writable="false"/>
+        <activiti:formProperty id="source" name="Data source" type="string" writable="false"/>
+        <activiti:formProperty id="principalLabel" name="Subject name" type="string" writable="false"/>
+        <activiti:formProperty id="ownerLabel" name="New owner" type="string" writable="false"/>
+        <activiti:formProperty id="accessSummary" name="Granted permissions" type="string" writable="false"/>
+        <activiti:formProperty id="decision" name="Accept ownership?" type="enum" required="true">
+          <activiti:value id="accept" name="Accept"/>
+          <activiti:value id="reject" name="Decline ownership"/>
+          <activiti:value id="forward" name="Forward to another candidate"/>
+        </activiti:formProperty>
+        <activiti:formProperty id="forwardOwnerObjectId" name="Forward to candidate" type="string"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="toApply" sourceRef="acceptOwnership" targetRef="apply"/>
+    <scriptTask id="apply" name="Apply decision and route review" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script><![CDATA[
+        def requestPath = 'managed/entraOwnerRequest/' + execution.getProcessInstanceId()
+        def request = openidm.read(requestPath)
+        def actor = org.activiti.engine.impl.identity.Authentication.getAuthenticatedUserId()
+        if (actor != request.newOwnerUserName) {
+            throw new IllegalArgumentException('Only the nominated owner can decide this request')
+        }
+        def choice = execution.getVariable('decision')
+        def rankedReview = !!request.ownerCandidatesJson
+        if (!(choice in (rankedReview ? ['accept','reject','forward'] : ['accept','reject'])) || request.status != 'pending') {
+            throw new IllegalArgumentException('A pending request and an explicit decision are required')
+        }
+        if (choice == 'accept') {
+            def owner = openidm.read('managed/user/' + request.newOwnerId)
+            def path = 'managed/entraServicePrincipal/' + request.servicePrincipalId
+            def principal = openidm.read(path, null, ['*','governanceOwner'])
+            if (owner.accountStatus != 'active' || owner.entraTenantId != principal.tenantId || owner.userName != actor) {
+                throw new IllegalArgumentException('Owner is no longer eligible')
+            }
+            def newRef = 'managed/user/' + request.newOwnerId
+            def currentRef = principal.governanceOwner?._ref ?: ''
+            if (currentRef != request.previousOwnerRef && currentRef != newRef) {
+                throw new IllegalStateException('Ownership changed while this request was pending; submit a new request')
+            }
+            if (currentRef != newRef) {
+                openidm.patch(path, principal._rev,
+                    [[operation:'add', field:'/governanceOwner', value:[_ref:newRef]]])
+            }
+        }
+        if (choice == 'reject' && !rankedReview) {
+            // Use the authoritative request, never task-completion variables.
+            // Complete the decision only after the connector confirms the block.
+            // Retrying accountEnabled=false after an uncertain outcome is idempotent.
+            openidm.patch('system/entra/servicePrincipal/' + request.subject, null,
+                [[operation:'replace', field:'/accountEnabled', value:false]])
+        }
+        def timestamp = java.time.Instant.now().toString()
+        def status = choice == 'accept' ? 'accepted' : 'rejected'
+        def updates = []
+        def nextOwner = null
+        if (rankedReview) {
+            def parser = new groovy.json.JsonSlurper()
+            def json = groovy.json.JsonOutput
+            def history = parser.parseText(request.ownerReviewHistoryJson)
+            def candidates = parser.parseText(request.ownerCandidatesJson)
+            def visited = history.collect { it.ownerId } + request.newOwnerId
+            if (choice != 'accept') {
+                def eligible = candidates.collect { candidate ->
+                    if (candidate.id in visited) return null
+                    def matches = openidm.query('managed/user', [
+                        _queryFilter:'entraObjectId eq ' + json.toJson(candidate.objectId) +
+                            ' and entraTenantId eq ' + json.toJson(request.tenantId)]).result
+                    if (matches.size() != 1 || matches[0]._id != candidate.id) return null
+                    def user = openidm.read('managed/user/' + candidate.id)
+                    if (user.accountStatus != 'active' || user.entraTenantId != request.tenantId ||
+                        user.entraObjectId != candidate.objectId || !user.userName) return null
+                    candidate + [userName:user.userName, label:user.displayName ?: user.userName]
+                }.findAll { it }
+                if (choice == 'forward') {
+                    nextOwner = eligible.find { it.objectId == execution.getVariable('forwardOwnerObjectId') }
+                    if (!nextOwner) throw new IllegalArgumentException('Select an eligible candidate who has not reviewed this request')
+                } else {
+                    nextOwner = eligible.find()
+                }
+                status = nextOwner ? 'pending' : 'exhausted'
+                if (nextOwner) {
+                    updates += [
+                        [operation:'replace', field:'/reviewer', value:nextOwner.userName],
+                        [operation:'replace', field:'/newOwnerId', value:nextOwner.id],
+                        [operation:'replace', field:'/newOwnerUserName', value:nextOwner.userName]]
+                    execution.setVariable('ownerAssignee', nextOwner.userName)
+                    execution.setVariable('ownerLabel', nextOwner.label)
+                    execution.setVariable('ownerEvidenceJson', request.ownerEvidenceJson)
+                    execution.setVariable('ownerCandidatesJson', json.toJson(candidates.collect { candidate ->
+                        def state = candidate.id == nextOwner.id ? 'current' :
+                            candidate.id in visited ? 'reviewed' : candidate.id in eligible*.id ? 'available' : 'unavailable'
+                        [objectId:candidate.objectId, label:candidate.id == nextOwner.id ? nextOwner.label : candidate.label,
+                            confidence:candidate.confidence, state:state]
+                    }))
+                    execution.setVariable('subject', request.subject)
+                    execution.setVariable('source', request.source)
+                    execution.setVariable('principalLabel', request.subjectName)
+                    execution.setVariable('grantedAccessJson', request.grantedAccessJson)
+                    execution.setVariable('accessSummary', request.accessSummary)
+                    execution.setVariable('decision', null)
+                    execution.setVariable('forwardOwnerObjectId', null)
+                }
+            }
+            history << [ownerId:request.newOwnerId, actor:actor, decision:choice, at:timestamp,
+                nextOwnerId:nextOwner?.id]
+            updates << [operation:'replace', field:'/ownerReviewHistoryJson', value:json.toJson(history)]
+        }
+        updates << [operation:'replace', field:'/status', value:status]
+        if (!nextOwner) {
+            updates += [
+                [operation:'add', field:'/decidedBy', value:actor],
+                [operation:'add', field:'/decidedAt', value:timestamp]]
+        }
+        openidm.patch(requestPath, request._rev, updates)
+        execution.setVariable('routeToNextOwner', nextOwner != null)
+      ]]></script>
+    </scriptTask>
+    <sequenceFlow id="toRoute" sourceRef="apply" targetRef="route"/>
+    <exclusiveGateway id="route" name="Another candidate?" default="toEnd"/>
+    <sequenceFlow id="toNextOwner" sourceRef="route" targetRef="acceptOwnership">
+      <conditionExpression xsi:type="tFormalExpression">${routeToNextOwner}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="toEnd" sourceRef="route" targetRef="end"/>
+    <endEvent id="end"/>
+  </process>
+  <bpmndi:BPMNDiagram id="ownershipDiagram">
+    <bpmndi:BPMNPlane id="ownershipPlane" bpmnElement="servicePrincipalOwner">
+      <bpmndi:BPMNShape id="startShape" bpmnElement="start"><omgdc:Bounds x="30" y="112" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="prepareShape" bpmnElement="prepare"><omgdc:Bounds x="110" y="90" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="acceptOwnershipShape" bpmnElement="acceptOwnership"><omgdc:Bounds x="320" y="90" width="180" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="applyShape" bpmnElement="apply"><omgdc:Bounds x="550" y="90" width="180" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="routeShape" bpmnElement="route"><omgdc:Bounds x="770" y="105" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endShape" bpmnElement="end"><omgdc:Bounds x="880" y="112" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="toPrepareEdge" bpmnElement="toPrepare"><omgdi:waypoint x="66" y="130"/><omgdi:waypoint x="110" y="130"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toApprovalEdge" bpmnElement="toApproval"><omgdi:waypoint x="270" y="130"/><omgdi:waypoint x="320" y="130"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toApplyEdge" bpmnElement="toApply"><omgdi:waypoint x="500" y="130"/><omgdi:waypoint x="550" y="130"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toRouteEdge" bpmnElement="toRoute"><omgdi:waypoint x="730" y="130"/><omgdi:waypoint x="770" y="130"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toNextOwnerEdge" bpmnElement="toNextOwner"><omgdi:waypoint x="795" y="105"/><omgdi:waypoint x="795" y="45"/><omgdi:waypoint x="410" y="45"/><omgdi:waypoint x="410" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toEndEdge" bpmnElement="toEnd"><omgdi:waypoint x="820" y="130"/><omgdi:waypoint x="880" y="130"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

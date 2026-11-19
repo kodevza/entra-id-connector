@@ -1,0 +1,257 @@
+{
+  "governanceOwner": {
+    "type": [
+      "relationship",
+      "null"
+    ],
+    "title": "Governance owner (OpenIDM)",
+    "description": "Local accountable owner, assigned only after acceptance in OpenIDM.",
+    "viewable": true,
+    "userEditable": false,
+    "isProtected": true,
+    "validate": true,
+    "properties": {
+      "_ref": {
+        "type": "string"
+      },
+      "_refProperties": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "resourceCollection": [
+      {
+        "path": "managed/user",
+        "label": "User",
+        "query": {
+          "queryFilter": "/accountStatus eq \"active\"",
+          "fields": [
+            "userName",
+            "displayName",
+            "entraUserPrincipalName"
+          ],
+          "sortKeys": [
+            "displayName"
+          ]
+        }
+      }
+    ],
+    "returnByDefault": true
+  },
+  "requestObject": {
+    "name": "entraOwnerRequest",
+    "schema": {
+      "type": "object",
+      "title": "Entra owner requests",
+      "viewable": true,
+      "order": [
+        "subject",
+        "subjectName",
+        "subjectType",
+        "source",
+        "tenantId",
+        "processId",
+        "processType",
+        "recordType",
+        "reviewer",
+        "servicePrincipalId",
+        "servicePrincipalName",
+        "newOwnerId",
+        "newOwnerUserName",
+        "previousOwnerRef",
+        "reason",
+        "requester",
+        "status",
+        "createdAt",
+        "decidedBy",
+        "decidedAt",
+        "grantedAccessJson",
+        "accessSummary",
+        "ownerEvidenceJson",
+        "ownerCandidatesJson",
+        "ownerReviewHistoryJson"
+      ],
+      "properties": {
+        "ownerReviewHistoryJson": {
+          "type": "string",
+          "title": "ownerReviewHistoryJson",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "ownerCandidatesJson": {
+          "type": "string",
+          "title": "ownerCandidatesJson",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "ownerEvidenceJson": {
+          "type": "string",
+          "title": "ownerEvidenceJson",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "servicePrincipalId": {
+          "type": "string",
+          "title": "servicePrincipalId",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "servicePrincipalName": {
+          "type": "string",
+          "title": "servicePrincipalName",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "newOwnerId": {
+          "type": "string",
+          "title": "newOwnerId",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "newOwnerUserName": {
+          "type": "string",
+          "title": "newOwnerUserName",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "previousOwnerRef": {
+          "type": "string",
+          "title": "previousOwnerRef",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "reason": {
+          "type": "string",
+          "title": "reason",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "requester": {
+          "type": "string",
+          "title": "requester",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "status": {
+          "type": "string",
+          "title": "status",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "createdAt": {
+          "type": "string",
+          "title": "createdAt",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "decidedBy": {
+          "type": "string",
+          "title": "decidedBy",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "decidedAt": {
+          "type": "string",
+          "title": "decidedAt",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "subject": {
+          "type": "string",
+          "title": "Subject",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "subjectName": {
+          "type": "string",
+          "title": "Subject name",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "subjectType": {
+          "type": "string",
+          "title": "Subject type",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "source": {
+          "type": "string",
+          "title": "Data source",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "tenantId": {
+          "type": "string",
+          "title": "Tenant ID",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "processId": {
+          "type": "string",
+          "title": "Process ID",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "processType": {
+          "type": "string",
+          "title": "Process type",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "recordType": {
+          "type": "string",
+          "title": "Record type",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "reviewer": {
+          "type": "string",
+          "title": "Reviewer",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "grantedAccessJson": {
+          "type": "string",
+          "title": "Granted permissions snapshot",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        },
+        "accessSummary": {
+          "type": "string",
+          "title": "Granted permissions",
+          "viewable": true,
+          "userEditable": false,
+          "isProtected": true
+        }
+      }
+    }
+  }
+}

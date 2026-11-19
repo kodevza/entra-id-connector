@@ -1,0 +1,227 @@
+{
+  "dbStructure": {
+    "orientdbClass": {
+      "managed_entraGroup": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraAzureRoleDefinition": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraApplication": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraApplicationOwner": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraDirectoryRoleDefinition": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraDirectoryRoleAssignment": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraServicePrincipalOwner": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraOauth2PermissionGrant": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraAzureRoleAssignment": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraGroupMembership": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraServicePrincipal": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraUser": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      },
+      "managed_entraAppRoleAssignment": {
+        "index": [
+          {
+            "propertyName": "_openidm_id",
+            "propertyType": "string",
+            "indexType": "unique"
+          },
+          {
+            "propertyNames": [
+              "tenantId",
+              "sourceId"
+            ],
+            "propertyType": "string",
+            "indexType": "unique"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+/target/
+.env
+.env.*
+!.env.example
+*.local.json
+.idea/
+.vscode/
+
+__pycache__/
+*.pyc
+
+node_modules/
+
+/output/playwright/

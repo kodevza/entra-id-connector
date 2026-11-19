@@ -1,0 +1,9 @@
+/* SPDX-License-Identifier: CDDL-1.1 */
+form:has([data-entra-owner-start]) input[name="startProcessButton"] { display: none; }
+[data-entra-owner-start] .stack,
+[data-entra-owner-start] .selection { display: grid; gap: .75rem; }
+[data-entra-owner-start] label { display: grid; gap: .25rem; }
+[data-entra-owner-start] ul { list-style: none; padding: 0; margin: 0; }
+[data-entra-owner-start] li + li { margin-top: .25rem; }
+[data-entra-owner-start] button { justify-self: start; white-space: normal; text-align: left; }
+[data-entra-owner-start] [role="alert"] { color: #a94442; }

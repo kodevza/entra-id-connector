@@ -1,0 +1,723 @@
+{
+  "name": "entra",
+  "connectorRef": {
+    "connectorHostRef": "osgi:service/org.identityconnectors.framework.api.ConnectorInfoManager",
+    "bundleName": "eu.soft4pm.openicf.entra-id-connector",
+    "bundleVersion": "[0.1.0,0.2.0)",
+    "connectorName": "eu.soft4pm.openicf.entra.EntraConnector"
+  },
+  "configurationProperties": {
+    "tenantId": "REPLACE_WITH_TENANT_UUID",
+    "clientId": "REPLACE_WITH_CLIENT_UUID",
+    "clientSecret": "SET_IN_OPENIDM_ADMIN_UI",
+    "subscriptionIds": [],
+    "requestTimeoutSeconds": 30,
+    "maxRetries": 3
+  },
+  "objectTypes": {
+    "account": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "__ACCOUNT__",
+      "type": "object",
+      "nativeType": "__ACCOUNT__",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "displayName": {
+          "type": "string",
+          "nativeName": "displayName",
+          "nativeType": "string"
+        },
+        "userPrincipalName": {
+          "type": "string",
+          "nativeName": "userPrincipalName",
+          "nativeType": "string"
+        },
+        "mail": {
+          "type": "string",
+          "nativeName": "mail",
+          "nativeType": "string"
+        },
+        "userType": {
+          "type": "string",
+          "nativeName": "userType",
+          "nativeType": "string"
+        },
+        "accountEnabled": {
+          "type": "boolean",
+          "nativeName": "accountEnabled",
+          "nativeType": "boolean"
+        }
+      }
+    },
+    "group": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "__GROUP__",
+      "type": "object",
+      "nativeType": "__GROUP__",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "displayName": {
+          "type": "string",
+          "nativeName": "displayName",
+          "nativeType": "string"
+        },
+        "description": {
+          "type": "string",
+          "nativeName": "description",
+          "nativeType": "string"
+        },
+        "mail": {
+          "type": "string",
+          "nativeName": "mail",
+          "nativeType": "string"
+        },
+        "mailNickname": {
+          "type": "string",
+          "nativeName": "mailNickname",
+          "nativeType": "string"
+        },
+        "securityEnabled": {
+          "type": "boolean",
+          "nativeName": "securityEnabled",
+          "nativeType": "boolean"
+        },
+        "mailEnabled": {
+          "type": "boolean",
+          "nativeName": "mailEnabled",
+          "nativeType": "boolean"
+        },
+        "groupTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "nativeType": "string"
+          },
+          "nativeName": "groupTypes",
+          "nativeType": "string"
+        },
+        "isAssignableToRole": {
+          "type": "boolean",
+          "nativeName": "isAssignableToRole",
+          "nativeType": "boolean"
+        }
+      }
+    },
+    "application": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "application",
+      "type": "object",
+      "nativeType": "application",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "displayName": {
+          "type": "string",
+          "nativeName": "displayName",
+          "nativeType": "string"
+        },
+        "appId": {
+          "type": "string",
+          "nativeName": "appId",
+          "nativeType": "string"
+        },
+        "signInAudience": {
+          "type": "string",
+          "nativeName": "signInAudience",
+          "nativeType": "string"
+        },
+        "identifierUris": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "nativeType": "string"
+          },
+          "nativeName": "identifierUris",
+          "nativeType": "string"
+        },
+        "appRolesJson": {
+          "type": "string",
+          "nativeName": "appRolesJson",
+          "nativeType": "string"
+        },
+        "apiJson": {
+          "type": "string",
+          "nativeName": "apiJson",
+          "nativeType": "string"
+        },
+        "requiredResourceAccessJson": {
+          "type": "string",
+          "nativeName": "requiredResourceAccessJson",
+          "nativeType": "string"
+        }
+      }
+    },
+    "servicePrincipal": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "servicePrincipal",
+      "type": "object",
+      "nativeType": "servicePrincipal",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "displayName": {
+          "type": "string",
+          "nativeName": "displayName",
+          "nativeType": "string"
+        },
+        "appId": {
+          "type": "string",
+          "nativeName": "appId",
+          "nativeType": "string"
+        },
+        "servicePrincipalType": {
+          "type": "string",
+          "nativeName": "servicePrincipalType",
+          "nativeType": "string"
+        },
+        "accountEnabled": {
+          "type": "boolean",
+          "nativeName": "accountEnabled",
+          "nativeType": "boolean"
+        },
+        "appOwnerOrganizationId": {
+          "type": "string",
+          "nativeName": "appOwnerOrganizationId",
+          "nativeType": "string"
+        },
+        "servicePrincipalNames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "nativeType": "string"
+          },
+          "nativeName": "servicePrincipalNames",
+          "nativeType": "string"
+        },
+        "appRolesJson": {
+          "type": "string",
+          "nativeName": "appRolesJson",
+          "nativeType": "string"
+        },
+        "oauth2PermissionScopesJson": {
+          "type": "string",
+          "nativeName": "oauth2PermissionScopesJson",
+          "nativeType": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "nativeType": "string"
+          },
+          "nativeName": "tags",
+          "nativeType": "string"
+        },
+        "grantedAccessJson": {
+          "type": "string",
+          "nativeName": "grantedAccessJson",
+          "nativeType": "string"
+        }
+      }
+    },
+    "groupMembership": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "groupMembership",
+      "type": "object",
+      "nativeType": "groupMembership",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "sourceId": {
+          "type": "string",
+          "nativeName": "sourceId",
+          "nativeType": "string"
+        },
+        "targetId": {
+          "type": "string",
+          "nativeName": "targetId",
+          "nativeType": "string"
+        },
+        "targetType": {
+          "type": "string",
+          "nativeName": "targetType",
+          "nativeType": "string"
+        }
+      }
+    },
+    "applicationOwner": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "applicationOwner",
+      "type": "object",
+      "nativeType": "applicationOwner",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "sourceId": {
+          "type": "string",
+          "nativeName": "sourceId",
+          "nativeType": "string"
+        },
+        "targetId": {
+          "type": "string",
+          "nativeName": "targetId",
+          "nativeType": "string"
+        },
+        "targetType": {
+          "type": "string",
+          "nativeName": "targetType",
+          "nativeType": "string"
+        }
+      }
+    },
+    "servicePrincipalOwner": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "servicePrincipalOwner",
+      "type": "object",
+      "nativeType": "servicePrincipalOwner",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "sourceId": {
+          "type": "string",
+          "nativeName": "sourceId",
+          "nativeType": "string"
+        },
+        "targetId": {
+          "type": "string",
+          "nativeName": "targetId",
+          "nativeType": "string"
+        },
+        "targetType": {
+          "type": "string",
+          "nativeName": "targetType",
+          "nativeType": "string"
+        }
+      }
+    },
+    "appRoleAssignment": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "appRoleAssignment",
+      "type": "object",
+      "nativeType": "appRoleAssignment",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "appRoleId": {
+          "type": "string",
+          "nativeName": "appRoleId",
+          "nativeType": "string"
+        },
+        "principalId": {
+          "type": "string",
+          "nativeName": "principalId",
+          "nativeType": "string"
+        },
+        "principalType": {
+          "type": "string",
+          "nativeName": "principalType",
+          "nativeType": "string"
+        },
+        "principalDisplayName": {
+          "type": "string",
+          "nativeName": "principalDisplayName",
+          "nativeType": "string"
+        },
+        "resourceId": {
+          "type": "string",
+          "nativeName": "resourceId",
+          "nativeType": "string"
+        },
+        "resourceDisplayName": {
+          "type": "string",
+          "nativeName": "resourceDisplayName",
+          "nativeType": "string"
+        },
+        "createdDateTime": {
+          "type": "string",
+          "nativeName": "createdDateTime",
+          "nativeType": "string"
+        }
+      }
+    },
+    "oauth2PermissionGrant": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "oauth2PermissionGrant",
+      "type": "object",
+      "nativeType": "oauth2PermissionGrant",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "clientId": {
+          "type": "string",
+          "nativeName": "clientId",
+          "nativeType": "string"
+        },
+        "consentType": {
+          "type": "string",
+          "nativeName": "consentType",
+          "nativeType": "string"
+        },
+        "principalId": {
+          "type": "string",
+          "nativeName": "principalId",
+          "nativeType": "string"
+        },
+        "resourceId": {
+          "type": "string",
+          "nativeName": "resourceId",
+          "nativeType": "string"
+        },
+        "scope": {
+          "type": "string",
+          "nativeName": "scope",
+          "nativeType": "string"
+        }
+      }
+    },
+    "directoryRoleAssignment": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "directoryRoleAssignment",
+      "type": "object",
+      "nativeType": "directoryRoleAssignment",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "principalId": {
+          "type": "string",
+          "nativeName": "principalId",
+          "nativeType": "string"
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "nativeName": "roleDefinitionId",
+          "nativeType": "string"
+        },
+        "directoryScopeId": {
+          "type": "string",
+          "nativeName": "directoryScopeId",
+          "nativeType": "string"
+        },
+        "appScopeId": {
+          "type": "string",
+          "nativeName": "appScopeId",
+          "nativeType": "string"
+        }
+      }
+    },
+    "directoryRoleDefinition": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "directoryRoleDefinition",
+      "type": "object",
+      "nativeType": "directoryRoleDefinition",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "displayName": {
+          "type": "string",
+          "nativeName": "displayName",
+          "nativeType": "string"
+        },
+        "description": {
+          "type": "string",
+          "nativeName": "description",
+          "nativeType": "string"
+        },
+        "templateId": {
+          "type": "string",
+          "nativeName": "templateId",
+          "nativeType": "string"
+        },
+        "isBuiltIn": {
+          "type": "boolean",
+          "nativeName": "isBuiltIn",
+          "nativeType": "boolean"
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "nativeName": "isEnabled",
+          "nativeType": "boolean"
+        },
+        "rolePermissionsJson": {
+          "type": "string",
+          "nativeName": "rolePermissionsJson",
+          "nativeType": "string"
+        },
+        "inheritsPermissionsFromJson": {
+          "type": "string",
+          "nativeName": "inheritsPermissionsFromJson",
+          "nativeType": "string"
+        }
+      }
+    },
+    "azureRoleAssignment": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "azureRoleAssignment",
+      "type": "object",
+      "nativeType": "azureRoleAssignment",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "subscriptionId": {
+          "type": "string",
+          "nativeName": "subscriptionId",
+          "nativeType": "string"
+        },
+        "principalId": {
+          "type": "string",
+          "nativeName": "principalId",
+          "nativeType": "string"
+        },
+        "principalType": {
+          "type": "string",
+          "nativeName": "principalType",
+          "nativeType": "string"
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "nativeName": "roleDefinitionId",
+          "nativeType": "string"
+        },
+        "scope": {
+          "type": "string",
+          "nativeName": "scope",
+          "nativeType": "string"
+        },
+        "condition": {
+          "type": "string",
+          "nativeName": "condition",
+          "nativeType": "string"
+        },
+        "conditionVersion": {
+          "type": "string",
+          "nativeName": "conditionVersion",
+          "nativeType": "string"
+        },
+        "description": {
+          "type": "string",
+          "nativeName": "description",
+          "nativeType": "string"
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nativeName": "delegatedManagedIdentityResourceId",
+          "nativeType": "string"
+        }
+      }
+    },
+    "azureRoleDefinition": {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "azureRoleDefinition",
+      "type": "object",
+      "nativeType": "azureRoleDefinition",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "nativeName": "__UID__"
+        },
+        "name": {
+          "type": "string",
+          "nativeName": "__NAME__",
+          "nativeType": "string"
+        },
+        "objectType": {
+          "type": "string",
+          "nativeName": "objectType",
+          "nativeType": "string"
+        },
+        "subscriptionId": {
+          "type": "string",
+          "nativeName": "subscriptionId",
+          "nativeType": "string"
+        },
+        "roleName": {
+          "type": "string",
+          "nativeName": "roleName",
+          "nativeType": "string"
+        },
+        "description": {
+          "type": "string",
+          "nativeName": "description",
+          "nativeType": "string"
+        },
+        "type": {
+          "type": "string",
+          "nativeName": "type",
+          "nativeType": "string"
+        },
+        "permissionsJson": {
+          "type": "string",
+          "nativeName": "permissionsJson",
+          "nativeType": "string"
+        },
+        "assignableScopes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "nativeType": "string"
+          },
+          "nativeName": "assignableScopes",
+          "nativeType": "string"
+        }
+      }
+    }
+  },
+  "operationOptions": {},
+  "systemActions": [
+    {
+      "scriptId": "isGroupMember",
+      "actions": [
+        {
+          "systemType": "^eu\\.soft4pm\\.openicf\\.entra\\.EntraConnector$",
+          "actionType": "entra",
+          "actionSource": "isGroupMember"
+        }
+      ]
+    }
+  ]
+}
