@@ -14,7 +14,7 @@ import uuid
 from mock_entra import BASE, CLIENT, GROUPS, SECRET, TENANT, USERS
 
 TESTS = Path(__file__).resolve().parent
-ROOT = TESTS.parents[1]
+ROOT = TESTS.parents[2]
 HOME = "/opt/openidm"
 IDM_IMAGE = os.getenv("TEST_OPENIDM_IMAGE", "openidentityplatform/openidm:latest")
 MOCK_IMAGE = os.getenv("TEST_PYTHON_IMAGE", "python:3.12-alpine")
@@ -63,7 +63,7 @@ def configure(work, idm):
         path.write_text(json.dumps(value, indent=2))
         docker("cp", str(path), f"{idm}:{HOME}/conf/{path.name}")
 
-    sys.path.insert(0, str(ROOT / "openidm"))
+    sys.path.insert(0, str(TESTS.parent))
     from identity_config import build_mapping, extend_managed
 
     managed = read("managed")

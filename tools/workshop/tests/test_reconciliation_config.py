@@ -8,7 +8,7 @@ from test_identity_config import TENANT, config
 
 class ReconciliationConfigTest(unittest.TestCase):
     def test_inventory_mappings_serialize_record_processing(self):
-        example = Path(__file__).resolve().parents[1] / 'sync-entra.example.json'
+        example = Path(__file__).resolve().parents[3] / 'openidm/sync-entra.example.json'
         mappings = json.loads(example.read_text(encoding='utf-8'))['mappings']
 
         self.assertTrue(mappings, 'The example must include inventory mappings')

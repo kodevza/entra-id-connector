@@ -16,6 +16,7 @@ import tempfile
 HELPER = 'org/forgerock/openidm/ui/common/util/UserDisplayName'
 MODEL = 'org/forgerock/openidm/ui/common/UserModel'
 MARKER = '<!-- Entra integration extension:'
+ASSETS = Path(__file__).resolve().parents[2] / 'openidm/ui'
 NAVIGATION = 'templates/common/NavigationTemplate.html'
 DASHBOARD = 'templates/workflow/tasks/TasksDashboardTemplate.html'
 REPORTING_LOADER = ('\n<!-- Governance CSV export -->\n'
@@ -72,7 +73,6 @@ def version_ui_assets(index, version):
 
 
 def install(container='openidm', check=False):
-    assets = Path(__file__).parent / 'ui'
     def docker(*args, **kwargs):
         return subprocess.run(['docker', *args], check=True, **kwargs)
     changes = []
@@ -94,7 +94,7 @@ def install(container='openidm', check=False):
             for relative in templates:
                 extension = base + 'extension/' + relative
                 old = read(extension)
-                template = (assets / relative).read_text()
+                template = (ASSETS / relative).read_text()
                 if relative == NAVIGATION and old is not None:
                     template = merge_navigation(old, read(base + 'default/' + relative) or '', template)
                 elif old is not None and MARKER not in old:
@@ -115,7 +115,7 @@ def install(container='openidm', check=False):
             index = previous if previous is not None else read(base + 'default/index.html')
             if index is None:
                 raise ValueError('Missing default UI index.html: ' + base + 'default/index.html')
-            version = hashlib.sha256(b'\0'.join((assets / relative).read_bytes() for relative in templates)).hexdigest()[:16]
+            version = hashlib.sha256(b'\0'.join((ASSETS / relative).read_bytes() for relative in templates)).hexdigest()[:16]
             updated = version_ui_assets(index, version)
             if updated != previous:
                 changes.append((index_path, previous, updated))

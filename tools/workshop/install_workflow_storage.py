@@ -9,7 +9,7 @@ import subprocess
 
 HOME = '/opt/openidm'
 DATABASE = f'{HOME}/db/activiti/database'
-MIGRATION = Path(__file__).resolve().parent / 'workflow/widen-h2-variable-text.sql'
+MIGRATION = Path(__file__).resolve().parents[2] / 'openidm/workflow/widen-h2-variable-text.sql'
 
 RUN_MIGRATION = r'''
 set -eu

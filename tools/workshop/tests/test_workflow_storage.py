@@ -13,7 +13,7 @@ TABLES = ('ACT_RU_VARIABLE', 'ACT_HI_VARINST', 'ACT_HI_DETAIL')
 @unittest.skipUnless(H2_JAR, 'Set OPENIDM_TEST_H2_JAR to run against H2')
 class WorkflowStorageTest(unittest.TestCase):
     def test_existing_h2_workflow_database_accepts_long_variable_values(self):
-        migration = Path(__file__).parents[1] / 'workflow' / 'widen-h2-variable-text.sql'
+        migration = Path(__file__).resolve().parents[3] / 'openidm/workflow/widen-h2-variable-text.sql'
         with tempfile.TemporaryDirectory() as directory:
             script = Path(directory) / 'test.sql'
             url = f'jdbc:h2:file:{directory}/workflow'

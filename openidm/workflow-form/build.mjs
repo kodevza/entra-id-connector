@@ -35,5 +35,5 @@ ${fields.map(name => `<textarea hidden aria-hidden="true" data-field="${name}">{
 <script>${js}</script>
 </div>\n`;
 await writeFile(resolve(output, 'servicePrincipalOwner.html'), html);
-execFileSync('python3', [resolve(root, 'pack.py'), output], { stdio: 'inherit' });
+execFileSync('python3', [resolve(root, '../../tools/workshop/pack.py'), output], { stdio: 'inherit' });
 console.log(`Preact form: ${Buffer.byteLength(html)} bytes (including styles and runtime)`);

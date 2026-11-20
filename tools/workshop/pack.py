@@ -6,9 +6,9 @@ import sys
 import zipfile
 import xml.etree.ElementTree as ET
 
-root = Path(__file__).resolve().parent
+root = Path(__file__).resolve().parents[2]
 output = Path(sys.argv[1])
-bpmn = root.parent / 'workflow/servicePrincipalOwner.bpmn20.xml'
+bpmn = root / 'openidm/workflow/servicePrincipalOwner.bpmn20.xml'
 model = ET.fromstring(bpmn.read_bytes())
 ns = {'b': 'http://www.omg.org/spec/BPMN/20100524/MODEL'}
 form_key = model.find('.//b:userTask', ns).attrib['{http://activiti.org/bpmn}formKey']
@@ -21,8 +21,8 @@ resources = {
     'servicePrincipalOwner.bpmn20.xml': bpmn.read_bytes(),
     start_key: (output / 'servicePrincipalOwnerStart.html').read_bytes(),
     form_key: (output / 'servicePrincipalOwner.html').read_bytes(),
-    'licenses/PREACT.txt': (root / 'node_modules/preact/LICENSE').read_bytes(),
-    'licenses/CDDL-1.1.txt': (root.parents[1] / 'LICENSE.md').read_bytes(),
+    'licenses/PREACT.txt': (root / 'openidm/workflow-form/node_modules/preact/LICENSE').read_bytes(),
+    'licenses/CDDL-1.1.txt': (root / 'LICENSE.md').read_bytes(),
 }
 archive = output / 'servicePrincipalOwner.bar'
 with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as bar:

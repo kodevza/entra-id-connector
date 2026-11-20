@@ -14,8 +14,8 @@ build the BAR and deploy the workflow and permissions:
 
 ```sh
 (cd openidm/workflow-form && npm ci && npm test)
-python3 openidm/install_workflow_bar.py
-python3 openidm/install_permissions.py
+python3 tools/workshop/install_workflow_bar.py
+python3 tools/workshop/install_permissions.py
 ```
 
 The start form now queries `/openidm/managed/entraServicePrincipal` and
@@ -34,8 +34,8 @@ new BAR is deployed and confirmed working, and after ensuring no older selectabl
 process definition still needs it:
 
 ```sh
-python3 openidm/remove_owner_search.py --check
-python3 openidm/remove_owner_search.py --apply
+python3 tools/workshop/remove_owner_search.py --check
+python3 tools/workshop/remove_owner_search.py --apply
 ```
 
 Removal makes a timestamped backup before deleting the config endpoint, deployed
@@ -46,8 +46,8 @@ If the standalone app or an earlier connector overlay is installed, remove it
 after deploying the BAR:
 
 ```sh
-python3 openidm/install_ownership_app.py --check
-python3 openidm/install_ownership_app.py
+python3 tools/workshop/install_ownership_app.py --check
+python3 tools/workshop/install_ownership_app.py
 ```
 
 For the older OwnerLookup overlay, add

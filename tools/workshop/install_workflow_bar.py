@@ -13,14 +13,14 @@ import urllib.error
 import urllib.request
 import zipfile
 
-ROOT = Path(__file__).resolve().parent
-ARCHIVE = ROOT.parent / 'target/workflow/servicePrincipalOwner.bar'
+ROOT = Path(__file__).resolve().parents[2]
+ARCHIVE = ROOT / 'target/workflow/servicePrincipalOwner.bar'
 KEY = 'servicePrincipalOwner'
 
 
 def validate_archive(archive):
     with zipfile.ZipFile(archive) as bar:
-        if bar.read(KEY + '.bpmn20.xml') != (ROOT / 'workflow' / (KEY + '.bpmn20.xml')).read_bytes():
+        if bar.read(KEY + '.bpmn20.xml') != (ROOT / 'openidm/workflow' / (KEY + '.bpmn20.xml')).read_bytes():
             raise ValueError('BAR is stale: rebuild with npm run build in openidm/workflow-form')
         form = bar.read('forms/servicePrincipalOwner.html').decode()
         if 'data-entra-owner-form' not in form or '{{variables.grantedAccessJson}}' not in form:

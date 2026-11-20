@@ -64,7 +64,7 @@ Export an un-anonymized OwnerLens Lite report with
 From the Entra connector repository, generate an OpenIDM start request:
 
 ```sh
-python3 openidm/ownerlens_payload.py report.json \
+python3 tools/workshop/ownerlens_payload.py report.json \
   --definition-id "$WORKFLOW_DEFINITION_ID" > owner-review.json
 ```
 

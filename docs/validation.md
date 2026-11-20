@@ -160,7 +160,7 @@ the container. Live tests confirmed:
 Read-only live check (initial empty-group deployment; `OPENIDM_PASSWORD` required):
 
 ```sh
-python3 openidm/tests/live_group_gate.py
+python3 tools/workshop/tests/live_group_gate.py
 ```
 
 This tests post-validation authorization, not an end-to-end interactive Entra/MFA

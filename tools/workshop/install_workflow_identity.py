@@ -28,7 +28,7 @@ def main():
     parser.add_argument('--username', default='openidm-admin')
     parser.add_argument('--check', action='store_true', help='Validate prerequisites without writing')
     args = parser.parse_args()
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[2] / 'openidm'
     password = os.environ.get('OPENIDM_PASSWORD') or getpass.getpass('OpenIDM admin password: ')
     headers = {'X-OpenIDM-Username':args.username, 'X-OpenIDM-Password':password, 'Content-Type':'application/json'}
 

@@ -5,8 +5,9 @@ from pathlib import Path
 import sys
 import unittest
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+WORKSHOP = Path(__file__).resolve().parents[1]
+ROOT = WORKSHOP.parents[1] / 'openidm'
+sys.path.insert(0, str(WORKSHOP))
 from install_permissions import merge
 
 

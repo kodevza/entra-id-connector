@@ -32,7 +32,7 @@ def main():
     password = os.environ.get('OPENIDM_PASSWORD') or getpass.getpass('OpenIDM admin password: ')
     secret = os.environ.get('ENTRA_CLIENT_SECRET') or getpass.getpass('Entra login client secret: ')
     headers = {'X-OpenIDM-Username':args.username,'X-OpenIDM-Password':password,'Content-Type':'application/json'}
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[2] / 'openidm'
     validate_archive(ARCHIVE)
     def api(path, data=None, method=None):
         req = urllib.request.Request(args.url.rstrip('/')+'/'+path, headers=headers, method=method,

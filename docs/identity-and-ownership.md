@@ -109,7 +109,7 @@ initialize its tables. Then run these steps from the connector checkout:
 
 ```sh
 docker stop openidm
-python3 openidm/install_workflow_storage.py --container openidm
+python3 tools/workshop/install_workflow_storage.py --container openidm
 docker start openidm
 ```
 
@@ -135,7 +135,7 @@ adds `givenName` and `surname` to the account schema. Restart OpenIDM after chan
 the JAR, then install its companion configuration:
 
 ```sh
-python3 openidm/install_identity.py \
+python3 tools/workshop/install_identity.py \
   --tenant YOUR_TENANT_UUID \
   --client-id YOUR_LOGIN_APP_CLIENT_ID \
   --access-group-id YOUR_IAM_GROUP_OBJECT_ID \
@@ -156,8 +156,8 @@ For an existing installation, update only the subject binding without supplying
 the login client secret again:
 
 ```sh
-python3 openidm/install_workflow_identity.py --check
-python3 openidm/install_workflow_identity.py
+python3 tools/workshop/install_workflow_identity.py --check
+python3 tools/workshop/install_workflow_identity.py
 ```
 
 This preserves the provider configuration, roles and existing mappings. It adds
@@ -215,9 +215,10 @@ The decision form explicitly labels this consequence. The connector must have
 the task pending and does not record a completed rejection; the owner can retry.
 A cloud write cannot be rolled back with the local workflow transaction: if the
 local history write fails after blocking, retrying the same disable is idempotent.
-Acceptance never re-enables a blocked principal. Install the updated definition
-with `../openidm/scripts/install-workflow.py`; only newly started instances use
-the blocking behavior. Already running instances retain their original definition. This is
+Acceptance never re-enables a blocked principal. Only newly started instances use
+the blocking behavior after you deploy the updated definition. See the
+[workflow deployment procedure](../openidm/WORKFLOW_UI.md#install).
+Already running instances retain their original definition. This is
 a local governance assignment and does **not** change Microsoft Graph owners.
 Imported Graph ownership remains in `entraServicePrincipalOwner`.
 
@@ -243,17 +244,17 @@ for script failures, including these validation failures; failed starts roll bac
 ```sh
 mvn verify
 node --test openidm/tests/*.test.cjs
-python3 -m unittest discover -s openidm/tests -p 'test_*.py'
+python3 -m unittest discover -s tools/workshop/tests -p 'test_*.py'
 # Exact BPMN scripts, mocked router, no cloud writes:
 docker cp openidm/tests/owner_workflow.groovy openidm:/tmp/entra-owner-workflow-test.groovy
 docker exec openidm java -cp '/opt/openidm/bundle/*' groovy.ui.GroovyMain \
   /tmp/entra-owner-workflow-test.groovy /opt/openidm/workflow/servicePrincipalOwner.bpmn20.xml
 # Disposable OpenIDM and mock OAuth/Graph with no external network:
-python3 openidm/tests/offline_reconciliation.py
+python3 tools/workshop/tests/offline_reconciliation.py
 # Disposable local records; Entra object IDs and both UI diagram endpoints:
-python3 openidm/tests/live_owner_workflow.py
+python3 tools/workshop/tests/live_owner_workflow.py
 # Native subject binding, stock Self Service aggregation and local task acceptance:
-python3 openidm/tests/live_workflow_identity.py
+python3 tools/workshop/tests/live_workflow_identity.py
 ```
 
 The local integration check verifies stable account IDs and missing-source
@@ -277,8 +278,8 @@ The full identity installer installs both extensions automatically. To update an
 existing integration, run from the connector checkout with OpenIDM running:
 
 ```sh
-python3 openidm/install_user_menu.py --check
-python3 openidm/install_user_menu.py
+python3 tools/workshop/install_user_menu.py --check
+python3 tools/workshop/install_user_menu.py
 ```
 
 The installer uses Docker, requires no API password and writes to these paths under `/opt/openidm/ui/`:
@@ -317,8 +318,9 @@ reason, status and decision timestamps/actor. These common fields allow the
 workflow collections in one history table and CSV. An ownership assignment is
 not labeled as a recertification.
 
-Install the latest definition using `../openidm/scripts/install-workflow.py`, then
-install the reporting companion. Both the host workflow installer and identity
+Deploy the latest workflow definition before installing the reporting companion.
+See the [workflow deployment procedure](../openidm/WORKFLOW_UI.md#install).
+Both the host workflow installer and identity
 schema builder add the new properties to existing request schemas while retaining
 custom properties. Existing process definitions, running instances and historical
 records keep their original behavior/data; the upgrade does not reconstruct
@@ -363,8 +365,8 @@ Upgrade an existing installation after building the connector:
 # Restart OpenIDM to load the bundle before installing configuration.
 npm ci --prefix openidm/workflow-form
 npm run --prefix openidm/workflow-form build
-python3 openidm/install_permissions.py --check
-python3 openidm/install_permissions.py
+python3 tools/workshop/install_permissions.py --check
+python3 tools/workshop/install_permissions.py
 ```
 
 The installer backs up configuration and the previous BPMN in the container,
@@ -384,7 +386,7 @@ The approval now uses a [custom Preact form packaged with BPMN in one BAR](../op
 
 ### Offline reconciliation integration test
 
-From the connector repository, run `python3 openidm/tests/offline_reconciliation.py`.
+From the connector repository, run `python3 tools/workshop/tests/offline_reconciliation.py`.
 It requires Docker, an OpenIDM image (`openidentityplatform/openidm:latest` by default),
 and `python:3.12-alpine`. Maven packages a disposable copy of the connector with
 loopback endpoints. If Maven is unavailable locally, load

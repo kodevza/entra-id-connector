@@ -16,7 +16,7 @@ import subprocess
 import urllib.request
 from install_workflow_bar import install_bar, validate_archive, ARCHIVE
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2] / 'openidm'
 
 
 def merge(configs):

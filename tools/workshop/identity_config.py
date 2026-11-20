@@ -73,7 +73,7 @@ def extend_managed(managed):
             if name not in schema.setdefault('order',[]): schema['order'].append(name)
     # The workflow schema is shared by fresh installs and upgrades. Preserve custom fields.
     from pathlib import Path
-    request_definition = json.loads((Path(__file__).parent / 'workflow/managed.json').read_text())['requestObject']
+    request_definition = json.loads((Path(__file__).resolve().parents[2] / 'openidm/workflow/managed.json').read_text())['requestObject']
     existing = next((o for o in managed['objects'] if o['name'] == 'entraOwnerRequest'), None)
     if existing is None:
         managed['objects'].append(copy.deepcopy(request_definition))

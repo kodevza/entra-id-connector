@@ -49,5 +49,5 @@ class NavigationTemplateTest(unittest.TestCase):
             menu.merge_navigation('<nav>Custom</nav>' + reporting, stock, entra)
 
     def test_retired_ownership_link_is_absent(self):
-        template = (Path(menu.__file__).parent / 'ui' / menu.NAVIGATION).read_text()
+        template = (menu.ASSETS / menu.NAVIGATION).read_text()
         self.assertNotIn('/entra-ownership.html', template)
