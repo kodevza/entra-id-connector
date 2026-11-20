@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: CDDL-1.1
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
-const archive = fileURLToPath(new URL('../../../target/workflow/servicePrincipalOwner.bar', import.meta.url));
-const template = execFileSync('python3', ['-c',
-    'import sys, zipfile; sys.stdout.buffer.write(zipfile.ZipFile(sys.argv[1]).read("forms/servicePrincipalOwner.html"))',
-    archive], { encoding: 'utf8' });
+import { readForm, runFormScript } from './archive.mjs';
+const template = readForm('servicePrincipalOwner.html');
 const snapshot = {
     collectedAt: '2026-11-18T12:00:00Z', coverage: 'Direct Entra grants', permissions: [
         { kind: 'application', grantId: '1', resourceName: 'Microsoft Graph', permission: 'User.Read.All', description: 'Read users' },
@@ -24,7 +20,7 @@ function mount(overrides = {}) {
     const html = template.replace(/{{variables\.(\w+)}}/g, (_, field) => escaped(variables[field]));
     const dom = new JSDOM('<!DOCTYPE html><form id="host"></form>', { runScripts: 'dangerously', url: 'http://localhost/' });
     dom.window.document.getElementById('host').innerHTML = html;
-    for (const script of dom.window.document.querySelectorAll('script')) dom.window.eval(script.textContent);
+    runFormScript(dom, dom.window.document.getElementById('host'), 'bar');
     return dom;
 }
 const tick = () => new Promise(resolve => setTimeout(resolve, 5));
@@ -65,8 +61,8 @@ test('filters the grant list, reports no matches, and submits only a deliberate 
     decision.value = 'reject'; decision.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
     await tick();
     assert.match(doc.querySelector('.eor-decision').textContent, /will block the service principal/);
-    assert.equal(decision.value, 'reject');
-    assert.deepEqual([...doc.querySelectorAll('[name]')].map(element => element.name), ['decision']);
+    const host = doc.getElementById('host');
+    assert.deepEqual(Object.fromEntries(new dom.window.FormData(host)), { decision: 'reject' });
     dom.window.close();
 });
 

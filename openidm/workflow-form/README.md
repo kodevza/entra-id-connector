@@ -30,14 +30,19 @@ licenses/PREACT.txt
 licenses/CDDL-1.1.txt
 ```
 
-The HTML includes Preact, scoped CSS and the application code. There are no
-runtime CDN imports, external assets, Node.js server or browser Graph calls.
+The HTML includes Preact, scoped CSS and the application code. The start form
+searches existing `managed/entraServicePrincipal` and `managed/user` endpoints
+with scoped query filters and `_fields` projections; there is no custom search
+endpoint. There are no runtime CDN imports, external assets, Node.js server or
+browser Graph calls.
 Dependencies are pinned in `package-lock.json`. Archive entries have fixed
 timestamps, making builds reproducible. Rebuild after changing BPMN or form code;
 the installer rejects a BAR whose BPMN differs from the current source.
 
 ## Install
 
+Prepare [workflow storage](../../docs/identity-and-ownership.md#workflow-storage-prerequisite)
+before deploying the BAR.
 See [workflow UI installation](../WORKFLOW_UI.md) for deployment and migration.
 The BAR installer verifies that the latest process and task definitions serve their forms from
 the archive. Keep legacy deployment files for running and historical workflow
@@ -96,6 +101,10 @@ and concurrent ownership rules. The backend resolves forwarding choices against 
 ## Integration test coverage
 
 `npm test` checks TypeScript, builds the BAR, and exercises both archived
-forms in jsdom. Start tests cover tenant-scoped lookup, manual and OwnerLens
-payloads, and retry after a failed start. Review tests cover escaped variables,
+forms in jsdom. Start tests cover direct managed-resource searches, tenant-scoped lookup,
+manual and OwnerLens payloads, authorization failures and retry after a failed start. Review tests cover escaped variables,
 permission filters, decisions, and forwarding.
+
+Run `npm run test:coverage` to measure the same scenarios against the
+TypeScript source. The coverage build writes to `target/workflow-coverage`.
+The HTML and LCOV reports are in `target/coverage-typescript`.

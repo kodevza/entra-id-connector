@@ -24,7 +24,15 @@ USERS = [
 ]
 
 
+PRINCIPAL = "40000000-0000-4000-8000-000000000001"
+RESOURCE = "40000000-0000-4000-8000-000000000002"
+ROLE = "50000000-0000-4000-8000-000000000001"
+APP_ID = "60000000-0000-4000-8000-000000000001"
+
+
 class Handler(BaseHTTPRequestHandler):
+    updated = False
+
     def respond(self, status, payload):
         body = json.dumps(payload).encode()
         self.send_response(status)
@@ -34,6 +42,10 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self):
+        if self.path == "/fixture/update-principal":
+            type(self).updated = True
+            self.respond(200, {})
+            return
         form = parse_qs(self.rfile.read(int(self.headers["Content-Length"])).decode())
         if self.path != "/token" or any(form.get(k) != [v] for k, v in {
             "client_id": CLIENT, "client_secret": SECRET,
@@ -48,7 +60,25 @@ class Handler(BaseHTTPRequestHandler):
         if self.headers.get("Authorization") != f"Bearer {TOKEN}":
             self.respond(401, {"error": "fixture bearer token required"})
             return
-        records = {"/graph/groups": GROUPS, "/graph/users": USERS}.get(url.path)
+        updated = self.updated
+        records = {
+            "/graph/groups": GROUPS,
+            "/graph/users": USERS,
+            "/graph/servicePrincipals": [
+                {"id": PRINCIPAL, "appId": APP_ID, "accountEnabled": not updated,
+                 "displayName": "Updated application" if updated else "Fixture application",
+                 "servicePrincipalType": "Application"},
+                {"id": RESOURCE, "displayName": "Fixture API",
+                 "appRoles": [{"id": ROLE, "value": "Inventory.Read", "description": "Read inventory"}]},
+            ],
+            f"/graph/servicePrincipals/{PRINCIPAL}/appRoleAssignments": [] if updated else [
+                {"id": "fixture-grant", "resourceId": RESOURCE, "appRoleId": ROLE},
+            ],
+            f"/graph/servicePrincipals/{RESOURCE}/appRoleAssignments": [],
+            "/graph/oauth2PermissionGrants": [],
+            "/graph/roleManagement/directory/roleAssignments": [],
+            "/graph/roleManagement/directory/roleDefinitions": [],
+        }.get(url.path)
         if records is None:
             self.respond(404, {"error": "unknown fixture route"})
             return

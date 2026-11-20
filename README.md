@@ -129,6 +129,57 @@ The bundle is reusable on compatible hosts without rebuilding OpenIDM. Copying i
 container survives stop/start but not container replacement; include the JAR in
 a derived image or mount a dedicated file for a durable deployment.
 
+### Install or reinstall ownership recertification
+
+Run these steps from the Entra Connector checkout after installing the bundle
+and configuring the provisioner above. Repeat them after replacing the OpenIDM
+container or restoring or creating its workflow database.
+
+1. For embedded H2, mount writable storage containing
+   `/opt/openidm/db/activiti`. On a fresh instance, start OpenIDM once and wait
+   for Activiti to initialize its database. During a maintenance window, stop
+   OpenIDM, run the connector's storage installer, and start OpenIDM only after
+   the migration succeeds.
+
+   ```sh
+   docker stop openidm &&
+     python3 openidm/install_workflow_storage.py --container openidm &&
+     docker start openidm
+   ```
+
+   The installer saves a timestamped H2 backup ZIP alongside the database and
+   widens the runtime and history variable text columns. Keep the backup path
+   printed by the installer. This step prevents the Activiti
+   `TEXT_ CHARACTER VARYING(4000)` error when an OwnerLens report exceeds
+   4,000 characters. For an external workflow database or a custom schema,
+   arrange the equivalent schema change with the database administrator.
+   See [workflow storage details](docs/identity-and-ownership.md#workflow-storage-prerequisite).
+
+2. Build the ownership workflow BAR.
+
+   ```sh
+   npm ci --prefix openidm/workflow-form
+   npm run --prefix openidm/workflow-form build
+   ```
+
+3. Once OpenIDM is ready, use the
+   [identity installer](docs/identity-and-ownership.md#installupdate) if the
+   identity and ownership companion still needs initial configuration. For an
+   existing installation, update the granted-access configuration and workflow
+   using the commands below. Both installers deploy the BAR.
+
+   ```sh
+   python3 openidm/install_permissions.py --check
+   python3 openidm/install_permissions.py
+   ```
+
+4. Run `systemEntraServicePrincipal_managedEntraServicePrincipal`
+   reconciliation and check `statusSummary.FAILURE`. Submit a test request
+   with non-anonymized OwnerLens Lite evidence longer than 4,000 characters
+   for a synchronized service principal with an eligible reviewer. Confirm
+   OpenIDM returns a process instance ID and the assigned review displays the
+   evidence. See the [OwnerLens Lite review procedure](openidm/workflow-form/README.md#ownerlens-lite-review).
+
 ### TLS trust
 
 Java HTTP uses OpenIDM's configured trust context. Some OpenIDM distributions
@@ -336,3 +387,17 @@ The connector provides custom OpenIDM workflow forms for starting service
 principal ownership requests and completing the assigned reviews.
 See [deployment and migration](openidm/WORKFLOW_UI.md) and
 [build and tests](openidm/workflow-form/README.md).
+
+## Integration tests and code coverage
+
+- `mvn clean verify` runs the Java connector and bundle tests and writes the
+  JaCoCo report to `target/site/jacoco/index.html`.
+- `python3 openidm/tests/offline_reconciliation.py` runs real OpenIDM
+  reconciliation in Docker with local Graph and OAuth fixtures. It checks
+  groups, users, and service principals, including repeated reconciliation,
+  updates to managed records, and removal of a revoked grant from the
+  managed service principal. This run uses a separate OpenIDM JVM.
+- In `openidm/workflow-form`, run `npm ci` and `npm run test:coverage` for
+  the archived Preact form integration tests and their TypeScript coverage.
+  The HTML report is at `target/coverage-typescript/index.html` from the
+  repository root.

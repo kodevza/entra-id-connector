@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: CDDL-1.1
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 import { setTimeout } from 'node:timers/promises';
-import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
+import { readForm, runFormScript } from './archive.mjs';
 
-const archive = fileURLToPath(new URL('../../../target/workflow/servicePrincipalOwner.bar', import.meta.url));
-const template = execFileSync('python3', ['-c',
-    'import sys, zipfile; sys.stdout.buffer.write(zipfile.ZipFile(sys.argv[1]).read("forms/servicePrincipalOwnerStart.html"))',
-    archive], { encoding: 'utf8' });
+const template = readForm('servicePrincipalOwnerStart.html');
 const definitionId = 'servicePrincipalOwner:7:selected';
 
 for (const method of ['manual', 'ownerlens']) {
@@ -23,12 +19,26 @@ for (const method of ['manual', 'ownerlens']) {
         host.querySelector('#processContent').innerHTML = template.replace('{{_id}}', definitionId);
         dom.window.fetch = async (url, options) => {
             assert.equal(options.credentials, 'same-origin');
-            if (url.pathname === '/openidm/endpoint/ownerLookup') {
-                if (url.searchParams.get('kind') === 'owner') {
-                    assert.equal(url.searchParams.get('principalId'), 'principal-oid');
-                    return Response.json({ result: [{ id: 'owner-oid', label: 'Example owner' }] });
+            if (url.pathname === '/openidm/managed/entraServicePrincipal') {
+                assert.equal(options.method, 'GET');
+                const filter = url.searchParams.get('_queryFilter');
+                assert.equal(url.searchParams.get('_pageSize'), filter.startsWith('sourceId eq ') ? '2' : '20');
+                if (filter.startsWith('sourceId eq ')) {
+                    assert.equal(filter, 'sourceId eq "principal-oid"');
+                    assert.equal(url.searchParams.get('_fields'), 'tenantId');
+                    return Response.json({ result: [{ tenantId: 'tenant-a' }] });
                 }
-                return Response.json({ result: [{ id: 'principal-oid', label: 'Example app' }] });
+                assert.match(filter, /displayName co "Example"/);
+                assert.match(filter, /sourceId sw "Example"/);
+                assert.equal(url.searchParams.get('_fields'), 'sourceId,displayName,appId,tenantId');
+                return Response.json({ result: [{ sourceId: 'principal-oid', tenantId: 'tenant-a', displayName: 'Example app' }] });
+            }
+            if (url.pathname === '/openidm/managed/user') {
+                assert.match(url.searchParams.get('_queryFilter'), /accountStatus eq "active" and entraObjectId pr and entraTenantId eq "tenant-a"/);
+                assert.match(url.searchParams.get('_queryFilter'), /mail co "Example"/);
+                assert.equal(url.searchParams.get('_pageSize'), '20');
+                assert.equal(url.searchParams.get('_fields'), 'entraObjectId,displayName,givenName,sn,userName,mail');
+                return Response.json({ result: [{ entraObjectId: 'owner-oid', displayName: 'Example owner' }] });
             }
             assert.equal(url.pathname, '/openidm/workflow/processinstance');
             assert.equal(url.searchParams.get('_action'), 'create');
@@ -37,7 +47,7 @@ for (const method of ['manual', 'ownerlens']) {
             return payloads.length === 1 ? Response.json({ message: 'Try again' }, { status: 409 })
                 : Response.json({ _id: 'started-instance' });
         };
-        dom.window.eval(host.querySelector('script').textContent);
+        runFormScript(dom, host, 'start-bar');
         assert.equal(document.forms.length, 1);
         assert.equal(host.querySelector('input[name="startProcessButton"]').disabled, true);
         function input(selector, value, type = 'input') {
@@ -77,3 +87,52 @@ for (const method of ['manual', 'ownerlens']) {
         }));
     });
 }
+
+test('search rejects a denied managed-resource read instead of silently showing no matches', async t => {
+    const dom = new JSDOM('<form><div id="processContent"></div><input type="submit" name="startProcessButton"></form>',
+        { runScripts: 'dangerously', url: 'http://localhost/' });
+    t.after(() => dom.window.close());
+    const { document, Event } = dom.window;
+    const host = document.querySelector('form');
+    host.querySelector('#processContent').innerHTML = template.replace('{{_id}}', definitionId);
+    dom.window.fetch = async (url, options) => {
+        assert.equal(url.pathname, '/openidm/managed/entraServicePrincipal');
+        assert.equal(options.method, 'GET');
+        return Response.json({ message: 'Forbidden' }, { status: 403 });
+    };
+    dom.window.eval(host.querySelector('script').textContent);
+    const input = host.querySelector('input[type=search]');
+    input.value = 'Example';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    for (let attempt = 0; attempt < 100; attempt++) {
+        if (host.querySelector('[role=alert]')?.textContent.includes('Forbidden')) break;
+        await setTimeout(10);
+    }
+    assert.match(host.querySelector('[role=alert]')?.textContent || '', /Forbidden/);
+    assert.equal(host.querySelector('input[name=startProcessButton]').disabled, true);
+});
+
+test('query values are escaped before inclusion in the managed-resource filter', async t => {
+    const dom = new JSDOM('<form><div id="processContent"></div><input type="submit" name="startProcessButton"></form>',
+        { runScripts: 'dangerously', url: 'http://localhost/' });
+    t.after(() => dom.window.close());
+    const { document, Event } = dom.window;
+    const host = document.querySelector('form');
+    host.querySelector('#processContent').innerHTML = template.replace('{{_id}}', definitionId);
+    const injection = '" or true or userName eq "\\';
+    let seen = false;
+    dom.window.fetch = async (url) => {
+        assert.equal(url.pathname, '/openidm/managed/entraServicePrincipal');
+        const literal = JSON.stringify(injection);
+        assert.equal(url.searchParams.get('_queryFilter'),
+            `(displayName co ${literal} or sourceId sw ${literal} or appId sw ${literal}) and sourceId pr and tenantId pr`);
+        seen = true;
+        return Response.json({ result: [] });
+    };
+    dom.window.eval(host.querySelector('script').textContent);
+    const input = host.querySelector('input[type=search]');
+    input.value = injection;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    for (let attempt = 0; attempt < 100 && !seen; attempt++) await setTimeout(10);
+    assert.ok(seen);
+});

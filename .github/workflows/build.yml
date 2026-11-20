@@ -14,7 +14,10 @@ jobs:
           cache: maven
       - run: mvn -B -ntp clean verify
       - name: Test OpenIDM configuration and installers
-        run: python3 -m unittest discover -s openidm/tests -p 'test_*.py'
+        run: |
+          mvn -B -ntp dependency:copy -Dartifact=com.h2database:h2:2.2.220 -DoutputDirectory=target/test-dependencies
+          OPENIDM_TEST_H2_JAR="$PWD/target/test-dependencies/h2-2.2.220.jar" \
+            python3 -m unittest discover -s openidm/tests -p 'test_*.py'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -25,12 +28,20 @@ jobs:
         run: |
           npm ci
           npm test
+          npm run test:coverage
       - name: Pull offline integration test images
         run: |
           docker pull openidentityplatform/openidm:latest
           docker pull python:3.12-alpine
       - name: Test reconciliation against mock Entra
         run: python3 openidm/tests/offline_reconciliation.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage
+          path: |
+            target/site/jacoco/
+            target/coverage-typescript/
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: entra-id-connector

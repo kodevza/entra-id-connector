@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: CDDL-1.1
-"""Install the Entra user menu template through OpenIDM's UI extension directories.
+"""Install the Entra navigation and Self-Service dashboard templates as UI extensions.
 
 No API credentials or OpenIDM source checkout are needed. Known legacy display-name
 bundle patches are removed; other bundle modules and workflow changes are retained.
 """
 import argparse
 import datetime
+import hashlib
 from pathlib import Path
 import re
 import subprocess
@@ -15,6 +16,21 @@ import tempfile
 HELPER = 'org/forgerock/openidm/ui/common/util/UserDisplayName'
 MODEL = 'org/forgerock/openidm/ui/common/UserModel'
 MARKER = '<!-- Entra integration extension:'
+NAVIGATION = 'templates/common/NavigationTemplate.html'
+DASHBOARD = 'templates/workflow/tasks/TasksDashboardTemplate.html'
+REPORTING_LOADER = ('\n<!-- Governance CSV export -->\n'
+                    '<script>require(["org/forgerock/openidm/ui/common/workflow/GovernanceReport"], '
+                    'function (install) { install(); });</script>\n')
+
+
+def merge_navigation(existing, stock, template):
+    if existing is None:
+        return template
+    base = existing.removesuffix(REPORTING_LOADER)
+    if MARKER not in base and (base == existing or base.rstrip() != stock.rstrip()):
+        raise ValueError('Existing custom UI navigation template needs manual merge')
+    return template + existing[len(base):]
+
 
 
 def remove_legacy_patch(bundle):
@@ -44,8 +60,19 @@ def remove_legacy_patch(bundle):
     return bundle
 
 
+def version_ui_assets(index, version):
+    def replace(match):
+        args = re.sub(r'&(?:entraDashboard|entraUi)=[^&"\']*', '', match.group(2))
+        return match.group(1) + args + '&entraUi=' + version + match.group(3)
+
+    updated, count = re.subn(r'(urlArgs\s*:\s*["\'])([^"\']*)(["\'])', replace, index)
+    if count != 1:
+        raise ValueError('Expected exactly one RequireJS urlArgs in UI index.html')
+    return updated
+
+
 def install(container='openidm', check=False):
-    template = (Path(__file__).parent / 'ui/templates/common/NavigationTemplate.html').read_text()
+    assets = Path(__file__).parent / 'ui'
     def docker(*args, **kwargs):
         return subprocess.run(['docker', *args], check=True, **kwargs)
     changes = []
@@ -63,13 +90,18 @@ def install(container='openidm', check=False):
         # Validate every change before writing any deployment files.
         for ui in ('admin', 'selfservice'):
             base = '/opt/openidm/ui/' + ui + '/'
-            extension = base + 'extension/templates/common/NavigationTemplate.html'
-            old = read(extension)
-            if old is not None and MARKER not in old:
-                raise ValueError('Existing custom navigation template needs manual merge: ' + extension)
-            if old != template:
-                changes.append((extension, old, template))
-            for relative in ('main.js', 'templates/common/NavigationTemplate.html'):
+            templates = (NAVIGATION, DASHBOARD) if ui == 'selfservice' else (NAVIGATION,)
+            for relative in templates:
+                extension = base + 'extension/' + relative
+                old = read(extension)
+                template = (assets / relative).read_text()
+                if relative == NAVIGATION and old is not None:
+                    template = merge_navigation(old, read(base + 'default/' + relative) or '', template)
+                elif old is not None and MARKER not in old:
+                    raise ValueError('Existing custom UI template needs manual merge: ' + extension)
+                if old != template:
+                    changes.append((extension, old, template))
+            for relative in ('main.js', NAVIGATION):
                 remote = base + 'default/' + relative
                 old = read(remote)
                 if old is None:
@@ -78,10 +110,19 @@ def install(container='openidm', check=False):
                        old.replace('{{idmDisplayName user.username}}', '{{user.username}}'))
                 if new != old:
                     changes.append((remote, old, new))
+            index_path = base + 'extension/index.html'
+            previous = read(index_path)
+            index = previous if previous is not None else read(base + 'default/index.html')
+            if index is None:
+                raise ValueError('Missing default UI index.html: ' + base + 'default/index.html')
+            version = hashlib.sha256(b'\0'.join((assets / relative).read_bytes() for relative in templates)).hexdigest()[:16]
+            updated = version_ui_assets(index, version)
+            if updated != previous:
+                changes.append((index_path, previous, updated))
         for remote, _, _ in changes:
             print(('Would update: ' if check else 'Updating: ') + remote)
         if check or not changes:
-            print('User menu extension check complete.' if check else 'User menu extension already installed.')
+            print('Entra UI extension check complete.' if check else 'Entra UI extensions already installed.')
             return
         stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
         backup = '/opt/openidm/identity-backups/user-menu-' + stamp
@@ -103,7 +144,7 @@ def install(container='openidm', check=False):
             target.write_text(new)
             docker('exec', container, 'mkdir', '-p', str(Path(remote).parent))
             docker('cp', str(target), container + ':' + remote, stdout=subprocess.DEVNULL)
-        print('Installed Entra user menu extension. Backup: ' + backup)
+        print('Installed Entra UI extensions. Backup: ' + backup)
         print('Hard-refresh both UIs to replace cached templates and bundles.')
 
 

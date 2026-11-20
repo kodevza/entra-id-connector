@@ -79,13 +79,15 @@ def configure(work, idm):
     write("repo.orientdb", repo)
 
     group_mapping = next(m for m in example("sync-entra")["mappings"] if m["target"] == "managed/entraGroup")
-    write("sync", {"mappings": [group_mapping, build_mapping(TENANT)]})
+    principal_mapping = next(m for m in example("sync-entra")["mappings"]
+                             if m["target"] == "managed/entraServicePrincipal")
+    write("sync", {"mappings": [group_mapping, build_mapping(TENANT), principal_mapping]})
     docker("cp", str(ROOT / "openidm/script/entra"), f"{idm}:{HOME}/script/")
 
     provisioner = example("provisioner.openicf-entra")
     provisioner["configurationProperties"].update(clientId=CLIENT, clientSecret=SECRET)
     types = provisioner["objectTypes"]
-    provisioner["objectTypes"] = {types[k]["id"]: types[k] for k in ("account", "group")}
+    provisioner["objectTypes"] = {types[k]["id"]: types[k] for k in ("account", "group", "servicePrincipal")}
     write("provisioner.openicf-entra", provisioner)
 
 
@@ -126,6 +128,7 @@ def main():
                    "-e", f"EXPECTED_ENTRA_GROUPS={len(GROUPS)}",
                    "-e", f"EXPECTED_ENTRA_USERS={len(USERS)}",
                    mock, "python3", "/tests/live_reconciliation.py")
+            docker("exec", *credentials, mock, "python3", "/tests/offline_principal.py")
             docker("exec", *credentials, mock, "python3", "/tests/live_identity.py",
                    "--url", "http://127.0.0.1:8080/openidm", "--tenant", TENANT)
         except (subprocess.CalledProcessError, TimeoutError):

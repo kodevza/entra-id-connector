@@ -100,9 +100,37 @@ in `iam-admins` additionally grants `openidm-admin`, without requiring membershi
 in `iam`. Locally stored `openidm-admin` grants are ignored for Entra logins, so
 removal from the administrator group takes effect on fresh authentication. Both groups are initially empty; the user maintains their members.
 
+## Workflow storage prerequisite
+
+For the default embedded H2 Activiti database, run the connector's storage
+installer before deploying the ownership workflow or starting reviews on an
+existing deployment. For a fresh instance, start OpenIDM once so Activiti can
+initialize its tables. Then run these steps from the connector checkout:
+
+```sh
+docker stop openidm
+python3 openidm/install_workflow_storage.py --container openidm
+docker start openidm
+```
+
+The installer uses the OpenIDM image and its H2 bundle in a temporary container.
+It requires the stopped instance's initialized database on writable mounted
+storage at `/opt/openidm/db/activiti/database.mv.db`. It saves a timestamped H2
+backup ZIP alongside the database before widening both text columns in the
+runtime variable and history tables. Existing rows remain readable and the
+migration can be rerun. Wait for it to succeed before starting OpenIDM.
+
+The columns retain their JDBC string type and use H2's default `VARCHAR`
+capacity in place of the Activiti schema's 4,000-character cap. OwnerLens
+still validates the evidence size at the workflow boundary. The installer
+targets the default embedded H2 layout and unprefixed tables. For an external
+Activiti data source or custom schema, have the database administrator apply
+the equivalent change for that database before deploying the workflow.
+
 ## Install/update
 
-Build and install the connector JAR as described in the main README. The update
+Prepare [workflow storage](#workflow-storage-prerequisite), then build and
+install the connector JAR as described in the main README. The update
 adds `givenName` and `surname` to the account schema. Restart OpenIDM after changing
 the JAR, then install its companion configuration:
 
@@ -233,7 +261,7 @@ deactivation using one temporary local account/link, then cleans that fixture.
 It only reads the cloud. A full interactive sign-in, including MFA and the return
 to OpenIDM, must also be checked with an actual user's Entra session.
 
-## User menu label
+## Navigation and Self-Service dashboard
 
 The connector's OpenIDM configuration includes a navigation template extension
 for both Admin and Self Service. The menu shows `displayName`, then given name
@@ -241,7 +269,11 @@ and surname, then Entra UPN, then the original username. Directory values are
 inserted with jQuery `text()`, so HTML is displayed as text. No authentication
 identifier, managed record ID, workflow assignment or relationship is changed.
 
-The full identity installer installs this extension automatically. To update an
+The connector also installs a Self-Service dashboard template that hides the
+Notifications panel and gives tasks and processes the full row. The dashboard
+still fetches notifications in the background.
+
+The full identity installer installs both extensions automatically. To update an
 existing integration, run from the connector checkout with OpenIDM running:
 
 ```sh
@@ -249,9 +281,13 @@ python3 openidm/install_user_menu.py --check
 python3 openidm/install_user_menu.py
 ```
 
-The installer uses Docker, requires no API password and writes the template to
-`/opt/openidm/ui/{admin,selfservice}/extension/templates/common/NavigationTemplate.html`.
-The template uses the existing RequireJS modules to read the managed user profile;
+The installer uses Docker, requires no API password and writes to these paths under `/opt/openidm/ui/`:
+
+- `{admin,selfservice}/extension/templates/common/NavigationTemplate.html`
+- `selfservice/extension/templates/workflow/tasks/TasksDashboardTemplate.html`
+- `{admin,selfservice}/extension/index.html` to version cached UI assets while preserving existing RequireJS parameters
+
+The navigation template uses the existing RequireJS modules to read the managed user profile;
 it does not replace OpenIDM JavaScript modules or require an OpenIDM UI build.
 
 For migration from the earlier implementation, the installer removes only the
@@ -259,7 +295,7 @@ known `UserDisplayName` patch from existing default bundles and resets the old
 template helper call. Unrelated workflow changes are preserved. All affected
 files are backed up under `/opt/openidm/identity-backups/user-menu-<timestamp>/`,
 with a manifest mapping backup filenames to their original paths. An existing
-custom navigation extension requires a manual merge; the installer stops before
+custom template at either extension path requires a manual merge; the installer stops before
 writing files in that case. Repeat installation is a no-op.
 
 Hard-refresh both UIs after installation. Role changes still require logout and

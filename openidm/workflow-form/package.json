@@ -6,12 +6,14 @@
   "scripts": {
     "build": "npm run typecheck && node build.mjs",
     "test": "npm run build && node --test test/*.test.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:coverage": "npm run build -- --coverage && WORKFLOW_TEST_COVERAGE=1 c8 --all --src src --extension .ts --extension .tsx --include \"src/**/*.{ts,tsx}\" --exclude src/types.ts --exclude-after-remap --reporter=text --reporter=html --reporter=lcov --reports-dir=../../target/coverage-typescript node --test test/*.test.mjs"
   },
   "dependencies": {
     "preact": "11.2.0"
   },
   "devDependencies": {
+    "c8": "12.0.0",
     "esbuild": "0.28.2",
     "jsdom": "26.1.0",
     "typescript": "5.9.3"

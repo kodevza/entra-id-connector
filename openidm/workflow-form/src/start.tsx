@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: CDDL-1.1
 import { h } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import { api, startOwnership } from './api';
+import { startOwnership } from './api';
+import { searchPrincipals, searchOwners } from './owner-lookup';
 
-import type { QueryResult, SearchItem } from './types';
+import type { SearchItem } from './types';
 
 interface SearchPickerProps {
     label: string;
@@ -47,10 +48,6 @@ export function SearchPicker({ label, search, selection, choose }: SearchPickerP
     </div>;
 }
 
-const lookup = (kind: 'principal' | 'owner', q: string, signal: AbortSignal, principalId?: string) =>
-    api<QueryResult<SearchItem>>('endpoint/ownerLookup', { query: { kind, q, ...(principalId && { principalId }) }, signal }).then(data => data.result);
-const searchPrincipal = (q: string, signal: AbortSignal) => lookup('principal', q, signal);
-
 export function Start({ definitionId }: { definitionId: string }) {
     const [principal, setPrincipal] = useState<SearchItem | null>(null);
     const [owner, setOwner] = useState<SearchItem | null>(null);
@@ -58,7 +55,7 @@ export function Start({ definitionId }: { definitionId: string }) {
     const [evidence, setEvidence] = useState('');
     const [mode, setMode] = useState('manual');
     const [state, setState] = useState<{ busy?: boolean; error?: string; started?: string }>({});
-    const searchOwner = useCallback((q: string, signal: AbortSignal) => lookup('owner', q, signal, principal?.id), [principal?.id]);
+    const searchOwner = useCallback((q: string, signal: AbortSignal) => searchOwners(q, signal, principal?.id ?? ''), [principal?.id]);
     async function submit() {
         if (state.busy || !principal || (mode === 'manual' && !owner)) return;
         if (!reason.trim() || (mode === 'ownerlens' && !evidence.trim())) {
@@ -79,7 +76,7 @@ export function Start({ definitionId }: { definitionId: string }) {
     if (state.started) return <div role="status">Request submitted. Process ID {state.started}</div>;
     return <div class="stack">
         <fieldset class="stack" disabled={state.busy}>
-            <SearchPicker label="Service principal" search={searchPrincipal} selection={principal}
+            <SearchPicker label="Service principal" search={searchPrincipals} selection={principal}
                 choose={item => { setPrincipal(item); setOwner(null); }} />
             <label>Nomination method<select class="form-control" value={mode} onChange={event => setMode(event.currentTarget.value)}>
                 <option value="manual">Manual nomination</option><option value="ownerlens">OwnerLens evidence</option>

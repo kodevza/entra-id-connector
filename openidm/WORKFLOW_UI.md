@@ -8,14 +8,39 @@ with the OpenIDM workflow views.
 
 ## Install
 
-From the connector checkout, build the BAR, install the search endpoint, and
-deploy the workflow and permissions:
+Follow the [workflow storage prerequisite](../docs/identity-and-ownership.md#workflow-storage-prerequisite)
+for embedded H2 before deploying the workflow. From the connector checkout,
+build the BAR and deploy the workflow and permissions:
 
 ```sh
 (cd openidm/workflow-form && npm ci && npm test)
-python3 openidm/install_owner_search.py
+python3 openidm/install_workflow_bar.py
 python3 openidm/install_permissions.py
 ```
+
+The start form now queries `/openidm/managed/entraServicePrincipal` and
+`/openidm/managed/user` directly (GET with `_queryFilter`, `_pageSize`, `_fields`).
+Before retiring the old endpoint, verify both searches work using a **non-admin**
+OIDC session. OpenIDM must authorize these reads and restrict which records and
+attributes that role may read. `_fields` only limits the **request**; it is NOT
+an authorization boundary. Do not grant `openidm-authorized` unrestricted access
+to `managed/user` or `managed/entraServicePrincipal` as a workaround. If the
+current authorization rules reject either read, this patch intentionally fails
+closed (the UI shows the API error). A narrow server-side search service is
+needed to preserve the former endpoint's least-privilege boundary.
+
+Existing installations can remove the now-unused server lookup **after** the
+new BAR is deployed and confirmed working, and after ensuring no older selectable
+process definition still needs it:
+
+```sh
+python3 openidm/remove_owner_search.py --check
+python3 openidm/remove_owner_search.py --apply
+```
+
+Removal makes a timestamped backup before deleting the config endpoint, deployed
+script and the installer's exact access-rule block. Restart OpenIDM if its
+`access.js` is cached. Do not delete the historical backup folders.
 
 If the standalone app or an earlier connector overlay is installed, remove it
 after deploying the BAR:

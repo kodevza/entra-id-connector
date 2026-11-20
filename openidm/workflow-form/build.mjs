@@ -5,12 +5,16 @@ import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
 const root = dirname(fileURLToPath(import.meta.url));
-const output = resolve(root, '../../target/workflow');
+const coverage = process.argv.includes('--coverage');
+const output = resolve(root, '../../target', coverage ? 'workflow-coverage' : 'workflow');
 await mkdir(output, { recursive: true });
 async function bundle(entry) {
+    const outfile = resolve(output, entry.replace(/\.tsx$/, '.js'));
     const result = await build({ entryPoints: [resolve(root, 'src', entry)], bundle: true, write: false,
-        minify: true, format: 'iife', target: ['es2020'], jsxFactory: 'h', jsxFragment: 'Fragment', legalComments: 'none' });
-    return result.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
+        minify: !coverage, outfile, sourcemap: coverage ? 'inline' : false, format: 'iife', target: ['es2020'], jsxFactory: 'h', jsxFragment: 'Fragment', legalComments: 'none' });
+    const script = result.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
+    if (coverage) await writeFile(outfile, script);
+    return script;
 }
 const [js, start, reviewStyles, startStyles] = await Promise.all([
     bundle('bar.tsx'), bundle('start-bar.tsx'), readFile(resolve(root, 'src/review.css'), 'utf8'),
